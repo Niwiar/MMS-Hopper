@@ -1,8 +1,9 @@
 ## Installation
 1. Install node.js
 2. cmd.exe on service directory, run "npm i"
-3. Config Database User, Password in file .env
-4. run start.bat
+3. In Sql Server, Create Hopper DB from "newTable.sql"
+4. Config Database User, Password in file .env
+5. run start.bat
 
 ## Hopper Report Services API
 1. Hopper List:
