@@ -6,7 +6,7 @@
 
 ## Hopper Report Services API
 1. Hopper List:
-     > ### GET http://localhost:3000/hopper/record/list?FromDate=<YYYY-MM-DD>&ToDate=<YYYY-MM-DD>
+     > ### GET http://localhost:3000/hopper/record/list?FromDate={YYYY-MM-DD}&ToDate={YYYY-MM-DD}
      > # Response
      > ```
      > [
@@ -21,7 +21,7 @@
      > ]
      > ```
 2. Hopper Report:
-     > ### GET http://localhost:3000/hopper/record/report?ProdDate=<YYYY-MM-DD>&RecpNameID=<RecpNameID>
+     > ### GET http://localhost:3000/hopper/record/report?ProdDate={YYYY-MM-DD}&RecpNameID={RecpNameID}
      > # Response
      > ```
      > {
