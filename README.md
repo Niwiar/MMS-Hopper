@@ -6,7 +6,7 @@
 5. run start.bat
 
 ## Hopper Report Services API
-1. Hopper List:
+1. Hopper Report List:
      > ### GET http://localhost:3000/hopper/record/list?FromDate={YYYY-MM-DD}&ToDate={YYYY-MM-DD}
      > # Response
      > ```
@@ -21,7 +21,7 @@
      >   },
      > ]
      > ```
-2. Hopper Report:
+2. Hopper Report Download:
      > ### GET http://localhost:3000/hopper/record/report?ProdDate={YYYY-MM-DD}&RecpNameID={RecpNameID}
      > # Response
      > ```
