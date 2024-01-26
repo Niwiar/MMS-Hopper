@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Ajinomoto-HopperRecord</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="sweetalert2/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo&amp;display=swap">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/togglebtn.css">
+</head>
+
+<body style="font-family: Exo, sans-serif;">
+    <div class="container-fluid d-flex d-xl-flex justify-content-center">
+        <div class="card shadow">
+            <div class="card-body"><img src="img/Picture1.png" style="width: 35%;">
+                <div class="row">
+                    <div class="col d-flex justify-content-center"><img class="w-50" src="img/LogoPNG.png"></div>
+                </div>
+                <div class="row">
+                    <div class="col d-flex justify-content-center">
+                        <h1>Hopper Record</h1>
+                    </div>
+                </div>
+                <form>
+                    <div class="form-row m-2">
+                        <div class="col px-5"><span>Username :</span><input class="form-control" type="text"
+                                id="inputUsername" required=""></div>
+                    </div>
+                    <div class="form-row m-2">
+                        <div class="col px-5"><span>Password:</span><input class="form-control" type="password"
+                                id="inputPassword" required=""></div>
+                    </div>
+                    <div class="form-row m-2">
+                        <div class="col px-5"><span>EX Select:</span><select class="form-control" id="inputLocID">
+                                <option value="1" selected>EX1</option>
+                                <option value="2">EX2</option>
+                            </select></div>
+                    </div>
+                    <div class="form-row m-2">
+                        <div class="col px-5">
+                            <button class="btn btn-info w-100" type="submit" id="buttonLogin">
+                                Login
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <img class="float-right" src="img/Picture2.png" style="width: 50%;">
+            </div>
+        </div>
+    </div>
+    <script src="jquery/dist/jquery.min.js"></script>
+    <script src="sweetalert2/dist/sweetalert2.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/bs-init.js"></script>
+    <script src="auth.js"></script>
+</body>
+
+</html>

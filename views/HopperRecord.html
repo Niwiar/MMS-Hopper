@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Ajinomoto-HopperRecord</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="sweetalert2/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="datatables.net-dt/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo&amp;display=swap">
+    <link rel="stylesheet" href="fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/togglebtn.css">
+</head>
+
+<body style="font-family: Exo, sans-serif;">
+    <nav class="navbar navbar-light navbar-expand-xl bg-white shadow d-flex mb-4 static-top shadow"
+        style="border-top: 5px solid var(--red);">
+        <div class="container-fluid">
+            <a class="navbar-brand float-left m-0" href="#">
+                <img src="img/ajinomoto-1.svg" style="height: 1.75rem;">
+                <br>
+            </a>
+            <a class="navbar-brand d-none d-print-inline-flex float-left d-sm-inline-flex d-md-inline-flex d-lg-inline-flex d-xl-inline-flex m-0"
+                href="#" style="font-size: 12px;">
+                Material Management System
+            </a>
+            <div class="dropdown d-lg-flex align-items-lg-center no-arrow m-0">
+                <a class="dropdown-toggle nav-link" aria-expanded="false" data-toggle="dropdown" href="#">
+                    <span class="text-dark d-inline mr-2 text-gray-600 small" id="infoUser">Name Surname</span>
+                    <span class="text-dark d-inline mr-2 text-gray-600 small" id="infoLoc">EX1</span>
+                    <img class="border rounded-circle imgprofile" src="img/Import/201-user.svg" style="height: 2rem;">
+                </a>
+                <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in">
+                    <a class="dropdown-item" href="/">
+                        <i class="fas fa-home fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Home
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item" id="buttonLogout">
+                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="modal fade" role="dialog" tabindex="-1" id="mdScanLabel">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="mdhdEditBag">แสกน Lot เนื้อ</h4><button class="close" type="button"
+                            aria-label="Close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <form>
+                                    <div class="form-row">
+                                        <div class="col"><textarea class="form-control"></textarea></div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group w-100"><button class="btn btn-success float-right" id="mdEditSubmit"
+                                type="submit">ยืนยัน</button><button class="btn btn-danger float-left" id="mdEditDelete"
+                                type="submit">ลบ</button></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="card shadow w-100">
+            <div class="card-header bg-dark">
+                <h4 class="text-center text-light">ระบบบันทึกการเติมฮอปเปอร์</h4>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-row">
+                        <div class="col text-right"><a class="btn btn-secondary btn-sm" role="button" href="/">Back</a>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-auto">
+                            <div class="form-group"><span class="mx-2">Plan Date :&nbsp;</span><input
+                                    class="form-control form-control-sm" type="date" style="width: 12rem;"
+                                    id="filterProdDate"></div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="form-group"><span class="mx-2">Recipe :&nbsp;</span>
+                                <select class="form-control form-control-sm" id="filterRecipe">
+                                    <option value="" selected="">กรุณาเลือกสูตร</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="form-group"><span class="mx-2">Lot การผลิต :&nbsp;</span><input
+                                    class="form-control form-control-sm" type="text" style="text-align: center;"
+                                    readonly id="filterLotNo"></div>
+                        </div>
+                        <div class="col align-self-center"><button class="btn btn-primary btn-sm" type="button"
+                                id="buttonHopperSearch">เลือก
+                                Lot</button></div>
+                    </div>
+                </form>
+                <div class="card shadow-sm mb-3">
+                    <div class="border rounded p-2" style="background: #888888;">
+                        <a id="collapseHopperOperator" class="btn btn-dark" data-toggle="collapse" aria-expanded="false"
+                            aria-controls="hopperoperator" href="#hopperoperator"
+                            role="button">รายชื่อหัวหน้ากะและผู้ช่วย</a>
+                        <div class="collapse" id="hopperoperator" style="font-size: 0.75em;">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <form id="formHopperOp">
+                                        <div class="form-row">
+                                            <div class="col text-center"><em
+                                                    class="text-muted">ลงชื่อหัวหน้ากะและผู้ช่วยหัวหน้ากะ</em></div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="col col-lg-2">
+                                                <div class="form-group">
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text">
+                                                    <span>&nbsp;</span>
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text" value="กะ 1:">
+                                                    <span>&nbsp;</span>
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text" value="กะ 2:">
+                                                    <span>&nbsp;</span>
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text" value="กะ 3:">
+                                                    <span>&nbsp;</span>
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text" value="กะ 1:">
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text" value="วันที่:">
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2 text-center"
+                                                        disabled type="text" value="ผู้ช่วย">
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputALead1_1"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputALead2"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputALead3"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputALead1_2"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <input id="inputALeadDate"
+                                                        class="inputLeadDate form-control form-control-sm mb-2"
+                                                        type="date">
+
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2 text-center"
+                                                        disabled type="text" value="หัวหน้ากะ">
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputLead1_1"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputLead2"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputLead3"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputLead1_2"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <input id="inputLeadDate"
+                                                        class="inputLeadDate form-control form-control-sm mb-2"
+                                                        type="date">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-success btn-sm text-nowrap mx-2" id="buttonHopperOp"
+                                            type="submit">บันทึก</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border rounded p-2" style="background: #888888;">
+                        <a id="collapseHopperDowntime" class="btn btn-dark" data-toggle="collapse" aria-expanded="false"
+                            aria-controls="hopperdowntime" href="#hopperdowntime" role="button">เวลารอผง</a>
+                        <div class="collapse" id="hopperdowntime" style="font-size: 0.75em;">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <form>
+                                        <div class="form-row">
+                                            <div class="col text-center"><em class="text-muted">บันทึกการรอผง</em></div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="col">
+                                                <div class="form-row">
+                                                    <div class="col">
+                                                        <div class="table-responsive table mt-2" id="tableWaittime"
+                                                            role="grid" aria-describedby="dataTable_info"
+                                                            style="font-size: 13px;">
+                                                            <datalist id="hopperDwtCause">
+                                                                <option data-isDefault="1" value="รอ Cooking">
+                                                                <option data-isDefault="1"
+                                                                    value="รอทำความสะอาด สกรูฟีด">
+                                                                <option data-isDefault="1" value="ลิฟท์เสีย">
+                                                                <option data-isDefault="1" value="เครื่อง Dry เสีย">
+                                                                <option data-isDefault="1" value="ห้อง Pack เสีย">
+                                                                <option data-isDefault="1" value="ไฟดับ">
+                                                            </datalist>
+                                                            <table class="table table-bordered my-0 display"
+                                                                id="tbHopperDwt">
+                                                                <thead class="text-center"
+                                                                    style="background: rgb(226,252,255);">
+                                                                    <tr>
+                                                                        <th>No.</th>
+                                                                        <th>เวลาเริ่มรอ</th>
+                                                                        <th>เวลาหยุดรอ</th>
+                                                                        <th>ระยะเวลา (นาที)</th>
+                                                                        <th>สาเหตุ</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody class="text-center">
+                                                                    <tr>
+                                                                        <td colspan="5">กรุณาเลือก Lot</td>
+                                                                        <td hidden></td>
+                                                                        <td hidden></td>
+                                                                        <td hidden></td>
+                                                                        <td hidden></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div><button class="btn btn-success btn-sm text-nowrap mx-2"
+                                                    id="buttonHopperDwt" disabled type="submit">บันทึก</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">แสกน QR Code ของผงแบช</h5>
+                        <div class="row">
+                            <div class="col">
+                                <div class="card shadow-sm">
+                                    <div class="card-body">
+                                        <form id="formHopperRec">
+                                            <div class="form-row mx-xl-5">
+                                                <div class="col px-xl-5 px-5 py-3"><input class="form-control"
+                                                        type="text" id="inputQrCode" placeholder="Scan QR Code Here"
+                                                        autofocus="" style="text-align: center;height: 10vh;"
+                                                        required=""></div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="col">
+                                                    <div class="form-row">
+                                                        <div class="col-auto">
+                                                            <div class="form-group"><label
+                                                                    style="font-size: 0.75em;">สูตร :</label><input
+                                                                    id="inputRecpName"
+                                                                    class="form-control form-control-sm" type="text"
+                                                                    style="text-align: center;" readonly=""></div>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <div class="form-group"><label
+                                                                    style="font-size: 0.75em;">Lot การผลิต
+                                                                    :</label><input id="inputLotNo"
+                                                                    class="form-control form-control-sm" type="text"
+                                                                    style="text-align: center;" readonly="">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row">
+                                                        <div class="col">
+                                                            <div class="form-group"><label
+                                                                    style="font-size: 0.75em;">วันที่:</label><input
+                                                                    id="inputProdDate"
+                                                                    class="form-control form-control-sm" type="date"
+                                                                    readonly=""></div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div class="form-group"><label
+                                                                    style="font-size: 0.75em;">แบชที่:</label><input
+                                                                    id="inputBatchNo"
+                                                                    class="form-control form-control-sm" type="number"
+                                                                    style="text-align: center;" required="" readonly="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div class="form-group"><label
+                                                                    style="font-size: 0.75em;">กะ</label><select
+                                                                    id="inputShift"
+                                                                    class="form-control form-control-sm">
+                                                                    <option value="1" selected="">1</option>
+                                                                    <option value="2">2</option>
+                                                                    <option value="3">3</option>
+                                                                </select>
+                                                                <div class="input-group input-group-sm">
+                                                                    <div class="input-group-prepend"></div>
+                                                                    <div class="input-group-append"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row">
+                                                        <div class="col-auto">
+                                                            <div class="form-group"><label
+                                                                    style="font-size: 0.75em;">ผู้ปฎิบัติงาน
+                                                                    : <span id="textProdName"></span></label><input
+                                                                    id="inputProdUser"
+                                                                    class="form-control form-control-sm" type="text"
+                                                                    style="text-align: center;"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row">
+                                                        <div class="col">
+                                                            <div class="form-group"><label
+                                                                    style="font-size: 0.75em;">เวลาเริ่มเท:</label><input
+                                                                    id="inputStartTime"
+                                                                    class="form-control form-control-sm" type="time"
+                                                                    style="width: 10rem;"></div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div class="form-group"><label
+                                                                    style="font-size: 0.75em;">จบแบช:</label><input
+                                                                    id="inputBatchEndTime"
+                                                                    class="form-control form-control-sm" type="time"
+                                                                    style="width: 10rem;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div class="form-group">
+                                            <div class="row mb-3">
+                                                <div class="col text-center"><button
+                                                        class="btn btn-info text-nowrap mx-2" id="buttonHopperRec"
+                                                        type="submit">บันทึก</button></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <form>
+                            <div class="form-row">
+                                <div class="col p-2">
+                                    <h4>วันที่ : <span id="selectedDate">-</span></h4>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="row">
+                            <div class="col">
+                                <div class="table-responsive table mt-2" id="tableRawMatHistory" role="grid"
+                                    aria-describedby="dataTable_info" style="font-size: 13px;">
+                                    <table class="table table-bordered my-0 display" id="tbHopperRec">
+                                        <thead class="text-center" style="background: rgb(226,252,255);">
+                                            <tr>
+                                                <th>วันที่ผลิต</th>
+                                                <th>แบช</th>
+                                                <th>กะ</th>
+                                                <th>เวลาเริ่มเท</th>
+                                                <th>เวลาจบแบช</th>
+                                                <th>ระยะเวลา (นาที)</th>
+                                                <th>ผู้ปฏิบัติ</th>
+                                                <th>Edit</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-center">
+                                            <tr>
+                                                <td colspan="8">กรุณาเลือก Lot</td>
+                                                <td hidden></td>
+                                                <td hidden></td>
+                                                <td hidden></td>
+                                                <td hidden></td>
+                                                <td hidden></td>
+                                                <td hidden></td>
+                                                <td hidden></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="sweetalert2/dist/sweetalert2.min.js"></script>
+    <script src="datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/bs-init.js"></script>
+    <script src="/js/DateTime.js"></script>
+    <script src="cookie.js"></script>
+    <script src="auth.js"></script>
+    <script src="/hopper/record.js"></script>
+</body>
+
+</html>

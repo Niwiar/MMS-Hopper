@@ -1,0 +1,14 @@
+.toggle-button {
+  /*width: 100px;*/
+  /*height: 25px;*/
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  /*cursor: pointer;*/
+}
+
+.active {
+  background-color: #e74c3c;
+}
+
