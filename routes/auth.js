@@ -14,12 +14,10 @@ router.get('/', (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   try {
     const { Username, Password, LocID } = req.body;
-    console.log(req.body)
     const pool = await sql.connect(dbconfig);
     const login = await pool.request().query(`SELECT *
         FROM [MasterUser]
         WHERE Username = N'${Username}' AND Password = N'${Password}'`);
-    console.log(login.recordset)
     if (!login.recordset.length) return next(createHttpError(401, "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"));
 
     const location = await pool.request().query(`SELECT LocationName

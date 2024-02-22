@@ -22,10 +22,10 @@ const dropdownRecipe = () => {
     },
   });
 };
-const dropdownRecipeByDate = (ProdDate) => {
+const dropdownPlan = (ProdDate) => {
   $.ajax({
     type: "get",
-    url: `/hopper/plan/recipes-by-date?ProdDate=${ProdDate}`,
+    url: `/hopper/plan?ProdDate=${ProdDate}`,
     contentType: "application/json; charset=utf-8",
     dataType: "json",
     success: function (res) {
@@ -34,9 +34,9 @@ const dropdownRecipeByDate = (ProdDate) => {
         `<option value="" selected="">กรุณาเลือกสูตร</option>`
       );
       res.forEach((data) => {
-        if (data.CurrentLot)
+        if (data.LotNo)
           $("#filterRecipe").append(
-            `<option value="${data.RecpNameID}" data-lotno="${data.CurrentLot}">${data.RecpName}</option>`
+            `<option value="${data.RecpNameID}" data-lotno="${data.LotNo}">${data.RecpName}</option>`
           );
       });
     },
@@ -44,10 +44,10 @@ const dropdownRecipeByDate = (ProdDate) => {
 };
 
 const getHopperRecTable = (ProdDate, RecpNameID) => {
-  if ($.fn.DataTable.isDataTable("#tbHopperRec")) {
-    $("#tbHopperRec").dataTable().fnDestroy();
-    $("#tbHopperRec tbody").empty();
-  }
+  // if ($.fn.DataTable.isDataTable("#tbHopperRec")) {
+  //   $("#tbHopperRec").dataTable().fnDestroy();
+  //   $("#tbHopperRec tbody").empty();
+  // }
   tbHopperRec = $("#tbHopperRec").DataTable({
     autoWidth: true,
     ordering: false,
@@ -115,10 +115,10 @@ const getHopperRecTable = (ProdDate, RecpNameID) => {
 };
 
 const getHopperDwtTable = (ProdDate, RecpNameID) => {
-  if ($.fn.DataTable.isDataTable("#tbHopperDwt")) {
-    $("#tbHopperDwt").dataTable().fnDestroy();
-    $("#tbHopperDwt tbody").empty();
-  }
+  // if ($.fn.DataTable.isDataTable("#tbHopperDwt")) {
+  //   $("#tbHopperDwt").dataTable().fnDestroy();
+  //   $("#tbHopperDwt tbody").empty();
+  // }
   tbHopperDwt = $("#tbHopperDwt").DataTable({
     // scrollY: "300px",
     autoWidth: false,
@@ -159,7 +159,7 @@ const getHopperDwtTable = (ProdDate, RecpNameID) => {
       {
         data: "Cause",
         render: function (data, type, row) {
-          return `<input class="border rounded form-control form-control-sm" list="hopperDwtCause" name="Cause" value='${
+          return `<input class="border rounded form-control form-control-sm w-auto" list="hopperDwtCause" name="Cause" value='${
             data || ""
           }'>`;
         },
@@ -169,7 +169,7 @@ const getHopperDwtTable = (ProdDate, RecpNameID) => {
 };
 
 const getHopperOp = (ProdDate,RecpNameID)=>{
-  $('#formHopperOp').trigger('reset')
+  // $('#formHopperOp').trigger('reset')
   $.ajax({
     type: "get",
     url: `/hopper/operator?ProdDate=${ProdDate}&RecpNameID=${RecpNameID}`,
@@ -193,13 +193,13 @@ const getHopperOp = (ProdDate,RecpNameID)=>{
 }
 
 const init = () => {
-  filterProdDate.val("2023-11-28");
+  filterProdDate.val(date);
   $("#selectedDate").text("-");
-  dropdownRecipe();
+  // dropdownRecipe();
+  dropdownPlan(filterProdDate.val());
 
   disabledFilter.attr("disabled", true);
   disabledRec.attr("disabled", true);
-  // dropdownRecipeByDate(filterProdDate.val());
 };
 
 let filter = $("#filterProdDate,#filterRecipe");
@@ -220,52 +220,76 @@ $("#hopperdowntime").on("shown.bs.collapse", function () {
   }
 });
 
-filter.on("change", () => {
-  if (filterProdDate.val() && filterRecipe.val())
-    $.ajax({
-      type: "get",
-      url: `/hopper/plan/lot?ProdDate=${filterProdDate.val()}&RecpNameID=${filterRecipe.val()}`,
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      success: (res) => {
-        filterLotNo.val(res.LotNo);
-      },
-    });
+filterProdDate.on("change", () => {
+  dropdownPlan(filterProdDate.val());
+  resetHopper()
 });
 
-$("#buttonHopperSearch").on("click", (e) => {
-  e.preventDefault();
+filterRecipe.on("change", () => {
+  const LotNo = filterRecipe.find("option:selected").data("lotno");
+  resetHopper()
+  if(LotNo){
+    filterLotNo.val(LotNo);
+    searchHopper()
+  }
+});
+
+// filter.on("change", () => {
+//   if (filterProdDate.val() && filterRecipe.val())
+//     $.ajax({
+//       type: "get",
+//       url: `/hopper/plan/lot?ProdDate=${filterProdDate.val()}&RecpNameID=${filterRecipe.val()}`,
+//       contentType: "application/json; charset=utf-8",
+//       dataType: "json",
+//       success: (res) => {
+//         filterLotNo.val(res.LotNo);
+//       },
+//     });
+// });
+
+function resetHopper(){
+  // Swal.fire({
+  //   icon: "error",
+  //   title: "Select Lot Failed",
+  //   text: "ไม่พบ Lot No.",
+  // });
+  filterLotNo.val('')
+  $('#formHopperOp').trigger('reset')
+  $('#formHopperOp span').html('&nbsp;')
+  if ($.fn.DataTable.isDataTable("#tbHopperDwt")) {
+    $("#tbHopperDwt").dataTable().fnDestroy();
+    $("#tbHopperDwt tbody").empty();
+  }
+  if ($.fn.DataTable.isDataTable("#tbHopperRec")) {
+    $("#tbHopperRec").dataTable().fnDestroy();
+    $("#tbHopperRec tbody").empty();
+  }
+  $("#tbHopperDwt tbody").html(`<tr>
+      <td colspan="5">กรุณาเลือก Lot</td>
+      <td hidden></td>
+      <td hidden></td>
+      <td hidden></td>
+      <td hidden></td>
+    </tr>`);
+  $("#tbHopperRec tbody").html(`<tr>
+      <td colspan="8">กรุณาเลือก Lot</td>
+      <td hidden></td>
+      <td hidden></td>
+      <td hidden></td>
+      <td hidden></td>
+      <td hidden></td>
+      <td hidden></td>
+      <td hidden></td>
+    </tr>`);
+  disabledFilter.attr("disabled", true);
+  disabledRec.attr("disabled", true);
+}
+
+function searchHopper(){
+  // e.preventDefault();
   const fProdDate = filterProdDate.val(),
     fRecpNameID = filterRecipe.val(),
     fLotNo = filterLotNo.val();
-
-  if (!fLotNo) {
-    Swal.fire({
-      icon: "error",
-      title: "Select Lot Failed",
-      text: "ไม่พบ Lot No.",
-    });
-    $("#tbHopperDwt tbody").html(`<tr>
-            <td colspan="5">กรุณาเลือก Lot</td>
-            <td hidden></td>
-            <td hidden></td>
-            <td hidden></td>
-            <td hidden></td>
-        </tr>`);
-    $("#tbHopperRec tbody").html(`<tr>
-            <td colspan="8">กรุณาเลือก Lot</td>
-            <td hidden></td>
-            <td hidden></td>
-            <td hidden></td>
-            <td hidden></td>
-            <td hidden></td>
-            <td hidden></td>
-            <td hidden></td>
-        </tr>`);
-    disabledFilter.attr("disabled", true);
-    disabledRec.attr("disabled", true);
-    return;
-  }
 
   $("#selectedDate").text(dymDate(fProdDate));
   getHopperDwtTable(fProdDate, fRecpNameID);
@@ -382,8 +406,8 @@ $("#buttonHopperSearch").on("click", (e) => {
       });
   });
 
-  $("#inputQrCode").off("change");
-  $("#inputQrCode").on("change", () => {
+  $("#inputQrCode").off("keyup change");
+  $("#inputQrCode").on("keyup change", () => {
     disabledRec.attr("disabled", true);
     const QrCode = $("#inputQrCode").val().split("-");
     // LotNo-RecpNameID-BatchNo-LogRawMatBatchGrind_LogID:23E2112801-010-001-001
@@ -479,7 +503,7 @@ $("#buttonHopperSearch").on("click", (e) => {
       saveHopperRec("PUT", data);
     });
   });
-});
+};
 
 const saveHopperRec = (type, data) => {
   $.ajax({

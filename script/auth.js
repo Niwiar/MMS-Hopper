@@ -12,8 +12,11 @@ $('#buttonLogin').on('click', async (e) => {
         contentType: 'application/json',
         data: JSON.stringify({ Username, Password, LocID }),
         beforeSend: () => Swal.showLoading()
-    }).fail((err) =>
+    }).fail((err) =>{
+        Swal.hideLoading()
         Swal.fire({ icon: 'error', title: 'Login Failed', text: err.responseJSON.message })
+    }
+    
     ).done(() => window.location.href = '/')
 })
 

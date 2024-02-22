@@ -9,11 +9,11 @@ const { fillDataTemplate, writeFile } = require("../../libs/reportUtil");
 const {
   getLogHopperRec,
   getLogHopperDwt,
-  getLotNo,
   getLogHopperList,
-  getRecpName,
   getLogHopperOp,
+  getPlanInfo,
 } = require("../../controllers/hopper.controller");
+const createHttpError = require("http-errors");
 
 router.get("/", async (req, res, next) => {
   try {
@@ -43,28 +43,32 @@ router.get("/list", async (req, res, next) => {
 router.get("/report", async (req, res, next) => {
   try {
     const { ProdDate, RecpNameID } = req.query;
-    const LotNo = await getLotNo(ProdDate, RecpNameID);
-    const RecpName = await getRecpName(RecpNameID);
+    const plan = await getPlanInfo(ProdDate, RecpNameID);
+    if(!plan)return next(createHttpError(404,'ไม่มีข้อมูลแผน'));
+    const {LotNo,RecpName} = plan
     const logHopperRec = await getLogHopperRec(ProdDate, RecpNameID);
     const logHopperDwt = await getLogHopperDwt(ProdDate, RecpNameID);
     const logHopperOp = await getLogHopperOp(ProdDate, RecpNameID);
 
+    if (logHopperRec.length==0) return next(createHttpError(404,'ไม่มีข้อมูลการบันทึก'));
+
     let logHopperOpArr = []
     logHopperOp.forEach((item) =>{
+        logHopperOpArr.push([
+        `กะ1 : ${item.ALead1_1Name||'-'}`,'','',
+        `กะ2 : ${item.ALead2Name||'-'}`,'',
+        `กะ3 : ${item.ALead3Name||'-'}`,'','',
+        `กะ1 : ${item.ALead1_2Name||'-'}`,'',
+        `วันที่ : ${item.ALeadDate?dymDate(item.ALeadDate):'-'}`
+      ])
       logHopperOpArr.push([
-      `กะ1 : ${item.ALead1_1Name||'-'}`,'','',
-      `กะ2 : ${item.ALead2Name||'-'}`,'',
-      `กะ3 : ${item.ALead3Name||'-'}`,'','',
-      `กะ1 : ${item.ALead1_2Name||'-'}`,'',
-      `วันที่ : ${item.ALeadDate?dymDate(item.ALeadDate):'-'}`
-    ])
-    logHopperOpArr.push([
-      `กะ1 : ${item.Lead1_1Name||'-'}`,'','',
-      `กะ2 : ${item.Lead2Name||'-'}`,'',
-      `กะ3 : ${item.Lead3Name||'-'}`,'','',
-      `กะ1 : ${item.Lead1_2Name||'-'}`,'',
-      `วันที่ : ${item.LeadDate?dymDate(item.LeadDate):'-'}`
-    ])});
+        `กะ1 : ${item.Lead1_1Name||'-'}`,'','',
+        `กะ2 : ${item.Lead2Name||'-'}`,'',
+        `กะ3 : ${item.Lead3Name||'-'}`,'','',
+        `กะ1 : ${item.Lead1_2Name||'-'}`,'',
+        `วันที่ : ${item.LeadDate?dymDate(item.LeadDate):'-'}`
+      ])
+    });
 
     let logHopperRecArr = logHopperRec.map((item) => [
       item.ProdDate, item.BatchNo, item.Shift,
@@ -101,7 +105,77 @@ router.get("/report", async (req, res, next) => {
 
     await writeFile(wb, "HopperReport.xlsx");
     let file = path.join(process.cwd(), "/public/temp/HopperReport.xlsx");
-    res.download(file);
+    res.status(200).send({FilePath:file});
+  } catch (err) {
+    next(err);
+  }
+});
+router.get("/report/download", async (req, res, next) => {
+  try {
+    const { ProdDate, RecpNameID } = req.query;
+    const plan = await getPlanInfo(ProdDate, RecpNameID);
+    if(!plan)return next(createHttpError(404,'ไม่มีข้อมูลแผน'));
+    const {LotNo,RecpName} = plan
+    const logHopperRec = await getLogHopperRec(ProdDate, RecpNameID);
+    const logHopperDwt = await getLogHopperDwt(ProdDate, RecpNameID);
+    const logHopperOp = await getLogHopperOp(ProdDate, RecpNameID);
+
+    if (logHopperRec.length==0) return next(createHttpError(404,'ไม่มีข้อมูลการบันทึก'));
+
+    let logHopperOpArr = []
+    logHopperOp.forEach((item) =>{
+        logHopperOpArr.push([
+        `กะ1 : ${item.ALead1_1Name||'-'}`,'','',
+        `กะ2 : ${item.ALead2Name||'-'}`,'',
+        `กะ3 : ${item.ALead3Name||'-'}`,'','',
+        `กะ1 : ${item.ALead1_2Name||'-'}`,'',
+        `วันที่ : ${item.ALeadDate?dymDate(item.ALeadDate):'-'}`
+      ])
+      logHopperOpArr.push([
+        `กะ1 : ${item.Lead1_1Name||'-'}`,'','',
+        `กะ2 : ${item.Lead2Name||'-'}`,'',
+        `กะ3 : ${item.Lead3Name||'-'}`,'','',
+        `กะ1 : ${item.Lead1_2Name||'-'}`,'',
+        `วันที่ : ${item.LeadDate?dymDate(item.LeadDate):'-'}`
+      ])
+    });
+
+    let logHopperRecArr = logHopperRec.map((item) => [
+      item.ProdDate, item.BatchNo, item.Shift,
+      item.StartTime, item.BatchEndTime, item.Duration,
+      item.ProdName,
+    ]);
+
+    let logHopperDwtArr = logHopperDwt.map((dwt) => [
+      `${dwt.Index}. : ตั้งแต่ ${dwt.StartTime || "______________"} ถึง ${
+        dwt.EndTime || "______________"
+      } รวม ${dwt.Duration || "__________"} นาที`,
+      "",
+      "",
+      "",
+      "",
+      "",
+      `สาเหตุ: ${dwt.Cause && Boolean(dwt.IsOther) ? "อื่นๆ " : ""}${
+        dwt.Cause || "_______________________________________"
+      }`,
+    ]);
+
+    //* excel
+    const wb = await XlsxPopulate.fromFileAsync(
+      "./public/report/hopper-template.xlsx"
+    );
+    const ws = wb.sheet(0);
+    await fillDataTemplate(ws, logHopperRecArr.slice(0, 28), "A7:G34");
+    await fillDataTemplate(ws, logHopperRecArr.slice(28), "H7:N34");
+    await fillDataTemplate(ws, logHopperDwtArr, "B36:H40");
+    await fillDataTemplate(ws, logHopperOpArr, "C42:M43");
+    await ws.row(3).cell(2).value(dymDate(ProdDate));
+    await ws.row(3).cell(9).value(RecpName);
+    await ws.row(3).cell(13).value(LotNo);
+
+    await writeFile(wb, "HopperReport.xlsx");
+    let file = path.join(process.cwd(), "/public/temp/HopperReport.xlsx");
+    res.status(200).download(file);
   } catch (err) {
     next(err);
   }

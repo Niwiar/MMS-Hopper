@@ -11,48 +11,48 @@ exports.getRecpName = async (RecpNameID) => {
   return Recp.recordset[0]?.RecpName;
 };
 
-exports.getLotNo = async (ProdDate, RecpNameID) => {
+exports.getPlanInfo = async (ProdDate, RecpNameID) => {
   const pool = await sql.connect(dbconfig);
-  const LotNo = await pool.request().query(`SELECT TOP 1 CurrentLot
-    FROM LogProdPlan
+  const Plan = await pool.request().query(`SELECT TOP 1 LotNo, RecpName, LocationName
+    FROM [viewPlanInfo]
     WHERE RecpNameID = ${RecpNameID}
         AND ProdDate = '${ProdDate}'`);
-  return LotNo.recordset[0]?.CurrentLot;
+  return Plan.recordset[0];
 };
 
 exports.getLogHopperList = async (FromDate, ToDate) => {
   const pool = await sql.connect(dbconfig);
-  const logHopperRec = await pool.request().query(
-    `SELECT row_number() over(order by logpl.CurrentLot desc) as 'Index',
-                CONVERT(varchar,loghr.ProdDate,23) ProdDate,         
-                CONVERT(varchar,loghr.ProdDate,34) ProdDateShow,
-                loghr.RecpNameID, mrn.RecpName, logpl.CurrentLot LotNo
-            FROM [LogHopperRec] loghr
-            LEFT JOIN [MasterRecipeName] mrn on loghr.RecpNameID = mrn.RecpNameID
-            LEFT JOIN [LogProdPlan] logpl on loghr.ProdDate = logpl.ProdDate
-                AND loghr.RecpNameID = logpl.RecpNameID
-            WHERE ${fromToFilter(
-              "loghr.ProdDate",
-              FromDate || checkDate(),
-              ToDate,
-              ""
-            )}
-            GROUP BY loghr.ProdDate, loghr.RecpNameID, mrn.RecpName, logpl.CurrentLot`
+  const logHopperList = await pool.request().query(
+    `SELECT TOP 200 row_number() over(order by loghr.ProdDate desc) as 'Index',
+        CONVERT(varchar,loghr.ProdDate,23) ProdDate,         
+        CONVERT(varchar,loghr.ProdDate,105) ProdDateShow,
+        loghr.RecpNameID, vpi.RecpName, vpi.LotNo, vpi.LocationName
+      FROM [viewPlanInfo] vpi
+      RIGHT JOIN [LogHopperRec] loghr on vpi.ProdDate = loghr.ProdDate and vpi.RecpNameID = loghr.RecpNameID
+      ${!FromDate && !ToDate ? '' : `WHERE ${fromToFilter(
+        "loghr.ProdDate",
+        FromDate || checkDate(),
+        ToDate,"")
+      }`}
+      GROUP BY loghr.ProdDate, loghr.RecpNameID, vpi.RecpName, vpi.LotNo, vpi.LocationName
+      ORDER BY loghr.ProdDate desc`
   );
-  return logHopperRec.recordset;
+  
+  
+  return logHopperList?.recordset||[];
 };
 
 exports.getLogHopperRec = async (ProdDate, RecpNameID) => {
   const pool = await sql.connect(dbconfig);
   const logHopperRec = await pool.request().query(
-    `SELECT loghr.LogID, CONVERT(varchar,loghr.ProdDate,34) ProdDate,
-                loghr.BatchNo, loghr.Shift,
-                CONVERT(varchar,loghr.StartTime,8) StartTime,
-                CONVERT(varchar,loghr.BatchEndTime,8) BatchEndTime,
-                DATEDIFF(minute,loghr.StartTime,loghr.BatchEndTime) Duration, mu.Name ProdName
-            FROM [LogHopperRec] loghr
-            LEFT JOIN [MasterUser] mu on loghr.ProdUser = mu.Username
-            WHERE loghr.ProdDate = '${ProdDate}' AND loghr.RecpNameID = ${RecpNameID}`
+    `SELECT loghr.LogID, CONVERT(varchar,loghr.ProdDate,105) ProdDate,
+        loghr.BatchNo, loghr.Shift,
+        CONVERT(varchar,loghr.StartTime,8) StartTime,
+        CONVERT(varchar,loghr.BatchEndTime,8) BatchEndTime,
+        DATEDIFF(minute,loghr.StartTime,loghr.BatchEndTime) Duration, mu.Name ProdName
+      FROM [LogHopperRec] loghr
+      LEFT JOIN [MasterUser] mu on loghr.ProdUser = mu.Username
+      WHERE loghr.ProdDate = '${ProdDate}' AND loghr.RecpNameID = ${RecpNameID}`
   );
   return logHopperRec.recordset;
 };
@@ -60,7 +60,7 @@ exports.getLogHopperRec = async (ProdDate, RecpNameID) => {
 exports.getLogHopperOp = async (ProdDate, RecpNameID) => {
   const pool = await sql.connect(dbconfig);
   const logHopperOp = await pool.request().query(
-    `SELECT loghr.LogID, CONVERT(varchar,loghr.ProdDate,34) ProdDate,
+    `SELECT loghr.LogID, CONVERT(varchar,loghr.ProdDate,105) ProdDate,
                 loghr.BatchNo, loghr.Shift,
                 CONVERT(varchar,loghr.StartTime,8) StartTime,
                 CONVERT(varchar,loghr.BatchEndTime,8) BatchEndTime,

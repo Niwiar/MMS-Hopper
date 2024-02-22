@@ -6,20 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Ajinomoto-HopperRecord</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="sweetalert2/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="datatables.net-dt/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo&amp;display=swap">
+    <link rel="stylesheet" href="fonts/google-exo.css">
+    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo&amp;display=swap"> -->
     <link rel="stylesheet" href="fonts/fontawesome-all.min.css">
     <link rel="stylesheet" href="fonts/font-awesome.min.css">
     <link rel="stylesheet" href="fonts/fontawesome5-overrides.min.css">
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/togglebtn.css">
 </head>
 
 <body style="font-family: Exo, sans-serif;">
-    <nav class="navbar navbar-light navbar-expand-xl bg-white shadow d-flex mb-4 static-top shadow"
+    <nav class="navbar navbar-light navbar-expand-xl bg-white shadow d-flex mb-0 mb-sm-4 static-top shadow"
         style="border-top: 5px solid var(--red);">
         <div class="container-fluid">
             <a class="navbar-brand float-left m-0" href="#">
@@ -48,35 +46,7 @@
             </div>
         </div>
     </nav>
-    <div class="modal fade" role="dialog" tabindex="-1" id="mdScanLabel">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <form>
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="mdhdEditBag">แสกน Lot เนื้อ</h4><button class="close" type="button"
-                            aria-label="Close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="card shadow-sm">
-                            <div class="card-body">
-                                <form>
-                                    <div class="form-row">
-                                        <div class="col"><textarea class="form-control"></textarea></div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="form-group w-100"><button class="btn btn-success float-right" id="mdEditSubmit"
-                                type="submit">ยืนยัน</button><button class="btn btn-danger float-left" id="mdEditDelete"
-                                type="submit">ลบ</button></div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="container">
+    <div class="container px-0 px-sm-3">
         <div class="card shadow w-100">
             <div class="card-header bg-dark">
                 <h4 class="text-center text-light">ระบบบันทึกการเติมฮอปเปอร์</h4>
@@ -105,196 +75,19 @@
                                     class="form-control form-control-sm" type="text" style="text-align: center;"
                                     readonly id="filterLotNo"></div>
                         </div>
-                        <div class="col align-self-center"><button class="btn btn-primary btn-sm" type="button"
+                        <!-- <div class="col align-self-center"><button class="btn btn-primary btn-sm" type="button"
                                 id="buttonHopperSearch">เลือก
-                                Lot</button></div>
+                                Lot</button></div> -->
                     </div>
                 </form>
                 <div class="card shadow-sm mb-3">
-                    <div class="border rounded p-2" style="background: #888888;">
-                        <a id="collapseHopperOperator" class="btn btn-dark" data-toggle="collapse" aria-expanded="false"
-                            aria-controls="hopperoperator" href="#hopperoperator"
-                            role="button">รายชื่อหัวหน้ากะและผู้ช่วย</a>
-                        <div class="collapse" id="hopperoperator" style="font-size: 0.75em;">
-                            <div class="card shadow-sm">
-                                <div class="card-body">
-                                    <form id="formHopperOp">
-                                        <div class="form-row">
-                                            <div class="col text-center"><em
-                                                    class="text-muted">ลงชื่อหัวหน้ากะและผู้ช่วยหัวหน้ากะ</em></div>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="col col-lg-2">
-                                                <div class="form-group">
-                                                    <input
-                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
-                                                        disabled type="text">
-                                                    <span>&nbsp;</span>
-                                                    <input
-                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
-                                                        disabled type="text" value="กะ 1:">
-                                                    <span>&nbsp;</span>
-                                                    <input
-                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
-                                                        disabled type="text" value="กะ 2:">
-                                                    <span>&nbsp;</span>
-                                                    <input
-                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
-                                                        disabled type="text" value="กะ 3:">
-                                                    <span>&nbsp;</span>
-                                                    <input
-                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
-                                                        disabled type="text" value="กะ 1:">
-                                                    <input
-                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
-                                                        disabled type="text" value="วันที่:">
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="form-group">
-                                                    <input
-                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2 text-center"
-                                                        disabled type="text" value="ผู้ช่วย">
-                                                    <div>
-                                                        <span>&nbsp;</span>
-                                                        <input id="inputALead1_1"
-                                                            class="inputLeadUser form-control form-control-sm mb-2"
-                                                            type="text">
-                                                    </div>
-                                                    <div>
-                                                        <span>&nbsp;</span>
-                                                        <input id="inputALead2"
-                                                            class="inputLeadUser form-control form-control-sm mb-2"
-                                                            type="text">
-                                                    </div>
-                                                    <div>
-                                                        <span>&nbsp;</span>
-                                                        <input id="inputALead3"
-                                                            class="inputLeadUser form-control form-control-sm mb-2"
-                                                            type="text">
-                                                    </div>
-                                                    <div>
-                                                        <span>&nbsp;</span>
-                                                        <input id="inputALead1_2"
-                                                            class="inputLeadUser form-control form-control-sm mb-2"
-                                                            type="text">
-                                                    </div>
-                                                    <input id="inputALeadDate"
-                                                        class="inputLeadDate form-control form-control-sm mb-2"
-                                                        type="date">
-
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="form-group">
-                                                    <input
-                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2 text-center"
-                                                        disabled type="text" value="หัวหน้ากะ">
-                                                    <div>
-                                                        <span>&nbsp;</span>
-                                                        <input id="inputLead1_1"
-                                                            class="inputLeadUser form-control form-control-sm mb-2"
-                                                            type="text">
-                                                    </div>
-                                                    <div>
-                                                        <span>&nbsp;</span>
-                                                        <input id="inputLead2"
-                                                            class="inputLeadUser form-control form-control-sm mb-2"
-                                                            type="text">
-                                                    </div>
-                                                    <div>
-                                                        <span>&nbsp;</span>
-                                                        <input id="inputLead3"
-                                                            class="inputLeadUser form-control form-control-sm mb-2"
-                                                            type="text">
-                                                    </div>
-                                                    <div>
-                                                        <span>&nbsp;</span>
-                                                        <input id="inputLead1_2"
-                                                            class="inputLeadUser form-control form-control-sm mb-2"
-                                                            type="text">
-                                                    </div>
-                                                    <input id="inputLeadDate"
-                                                        class="inputLeadDate form-control form-control-sm mb-2"
-                                                        type="date">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-success btn-sm text-nowrap mx-2" id="buttonHopperOp"
-                                            type="submit">บันทึก</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border rounded p-2" style="background: #888888;">
-                        <a id="collapseHopperDowntime" class="btn btn-dark" data-toggle="collapse" aria-expanded="false"
-                            aria-controls="hopperdowntime" href="#hopperdowntime" role="button">เวลารอผง</a>
-                        <div class="collapse" id="hopperdowntime" style="font-size: 0.75em;">
-                            <div class="card shadow-sm">
-                                <div class="card-body">
-                                    <form>
-                                        <div class="form-row">
-                                            <div class="col text-center"><em class="text-muted">บันทึกการรอผง</em></div>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="col">
-                                                <div class="form-row">
-                                                    <div class="col">
-                                                        <div class="table-responsive table mt-2" id="tableWaittime"
-                                                            role="grid" aria-describedby="dataTable_info"
-                                                            style="font-size: 13px;">
-                                                            <datalist id="hopperDwtCause">
-                                                                <option data-isDefault="1" value="รอ Cooking">
-                                                                <option data-isDefault="1"
-                                                                    value="รอทำความสะอาด สกรูฟีด">
-                                                                <option data-isDefault="1" value="ลิฟท์เสีย">
-                                                                <option data-isDefault="1" value="เครื่อง Dry เสีย">
-                                                                <option data-isDefault="1" value="ห้อง Pack เสีย">
-                                                                <option data-isDefault="1" value="ไฟดับ">
-                                                            </datalist>
-                                                            <table class="table table-bordered my-0 display"
-                                                                id="tbHopperDwt">
-                                                                <thead class="text-center"
-                                                                    style="background: rgb(226,252,255);">
-                                                                    <tr>
-                                                                        <th>No.</th>
-                                                                        <th>เวลาเริ่มรอ</th>
-                                                                        <th>เวลาหยุดรอ</th>
-                                                                        <th>ระยะเวลา (นาที)</th>
-                                                                        <th>สาเหตุ</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody class="text-center">
-                                                                    <tr>
-                                                                        <td colspan="5">กรุณาเลือก Lot</td>
-                                                                        <td hidden></td>
-                                                                        <td hidden></td>
-                                                                        <td hidden></td>
-                                                                        <td hidden></td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </div><button class="btn btn-success btn-sm text-nowrap mx-2"
-                                                    id="buttonHopperDwt" disabled type="submit">บันทึก</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="card-body">
                         <h5 class="card-title">แสกน QR Code ของผงแบช</h5>
                         <div class="row">
                             <div class="col">
-                                <div class="card shadow-sm">
-                                    <div class="card-body">
                                         <form id="formHopperRec">
                                             <div class="form-row mx-xl-5">
-                                                <div class="col px-xl-5 px-5 py-3"><input class="form-control"
+                                                <div class="col px-xl-5 px-1 py-3"><input class="form-control"
                                                         type="text" id="inputQrCode" placeholder="Scan QR Code Here"
                                                         autofocus="" style="text-align: center;height: 10vh;"
                                                         required=""></div>
@@ -319,14 +112,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-row">
-                                                        <div class="col">
+                                                        <div class="col-12 col-md-6 col-xl-4">
                                                             <div class="form-group"><label
                                                                     style="font-size: 0.75em;">วันที่:</label><input
                                                                     id="inputProdDate"
                                                                     class="form-control form-control-sm" type="date"
                                                                     readonly=""></div>
                                                         </div>
-                                                        <div class="col">
+                                                        <div class="col-6 col-md-3 col-xl-4">
                                                             <div class="form-group"><label
                                                                     style="font-size: 0.75em;">แบชที่:</label><input
                                                                     id="inputBatchNo"
@@ -334,7 +127,7 @@
                                                                     style="text-align: center;" required="" readonly="">
                                                             </div>
                                                         </div>
-                                                        <div class="col">
+                                                        <div class="col-6 col-md-3 col-xl-4">
                                                             <div class="form-group"><label
                                                                     style="font-size: 0.75em;">กะ</label><select
                                                                     id="inputShift"
@@ -386,51 +179,249 @@
                                                         type="submit">บันทึก</button></div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- <div class="card"> -->
+                <div>
+                    <form>
+                        <div class="form-row">
+                            <div class="col p-2">
+                                <h4>วันที่ : <span id="selectedDate">-</span></h4>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <div class="col">
+                            <div class="table-responsive table mt-2 shadow" id="tableRawMatHistory" role="grid"
+                                aria-describedby="dataTable_info" style="font-size: 13px;">
+                                <table class="table table-bordered my-0 display" id="tbHopperRec">
+                                    <thead class="text-center" style="background: rgb(226,252,255);">
+                                        <tr>
+                                            <th>วันที่ผลิต</th>
+                                            <th>แบช</th>
+                                            <th>กะ</th>
+                                            <th>เวลาเริ่มเท</th>
+                                            <th>เวลาจบแบช</th>
+                                            <th>ระยะเวลา (นาที)</th>
+                                            <th>ผู้ปฏิบัติ</th>
+                                            <th>Edit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-center">
+                                        <tr>
+                                            <td colspan="8">กรุณาเลือก Lot</td>
+                                            <td hidden></td>
+                                            <td hidden></td>
+                                            <td hidden></td>
+                                            <td hidden></td>
+                                            <td hidden></td>
+                                            <td hidden></td>
+                                            <td hidden></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- </div> -->
                 <div class="card">
-                    <div class="card-body">
-                        <form>
-                            <div class="form-row">
-                                <div class="col p-2">
-                                    <h4>วันที่ : <span id="selectedDate">-</span></h4>
+                    <div class="border rounded p-0 p-sm-2" style="background: #888888;">
+                        <a id="collapseHopperDowntime" class="btn btn-dark" data-toggle="collapse" aria-expanded="false"
+                            aria-controls="hopperdowntime" href="#hopperdowntime" role="button">เวลารอผง</a>
+                        <div class="collapse" id="hopperdowntime" style="font-size: 0.75em;">
+                            <div class="card shadow-sm">
+                                <div class="p-2 pt-4">
+                                    <form>
+                                        <div class="form-row">
+                                            <div class="col text-center"><em class="text-muted">บันทึกการรอผง</em></div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="col">
+                                                        <div class="table-responsive table mt-2 w-100" id="tableWaittime"
+                                                            role="grid" aria-describedby="dataTable_info"
+                                                            style="font-size: 13px;">
+                                                            <datalist id="hopperDwtCause">
+                                                                <option data-isDefault="1" value="รอ Cooking">
+                                                                <option data-isDefault="1"
+                                                                    value="รอทำความสะอาด สกรูฟีด">
+                                                                <option data-isDefault="1" value="ลิฟท์เสีย">
+                                                                <option data-isDefault="1" value="เครื่อง Dry เสีย">
+                                                                <option data-isDefault="1" value="ห้อง Pack เสีย">
+                                                                <option data-isDefault="1" value="ไฟดับ">
+                                                            </datalist>
+                                                            <table class="table table-bordered my-0 display"
+                                                                id="tbHopperDwt">
+                                                                <thead class="text-center"
+                                                                    style="background: rgb(226,252,255);">
+                                                                    <tr>
+                                                                        <th>No.</th>
+                                                                        <th>เวลาเริ่มรอ</th>
+                                                                        <th>เวลาหยุดรอ</th>
+                                                                        <th>ระยะเวลา (นาที)</th>
+                                                                        <th>สาเหตุ</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody class="text-center">
+                                                                    <tr>
+                                                                        <td colspan="5">กรุณาเลือก Lot</td>
+                                                                        <td hidden></td>
+                                                                        <td hidden></td>
+                                                                        <td hidden></td>
+                                                                        <td hidden></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                <button class="btn btn-success btn-sm text-nowrap mx-2"
+                                                    id="buttonHopperDwt" disabled type="submit">บันทึก</button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
-                        </form>
-                        <div class="row">
-                            <div class="col">
-                                <div class="table-responsive table mt-2" id="tableRawMatHistory" role="grid"
-                                    aria-describedby="dataTable_info" style="font-size: 13px;">
-                                    <table class="table table-bordered my-0 display" id="tbHopperRec">
-                                        <thead class="text-center" style="background: rgb(226,252,255);">
-                                            <tr>
-                                                <th>วันที่ผลิต</th>
-                                                <th>แบช</th>
-                                                <th>กะ</th>
-                                                <th>เวลาเริ่มเท</th>
-                                                <th>เวลาจบแบช</th>
-                                                <th>ระยะเวลา (นาที)</th>
-                                                <th>ผู้ปฏิบัติ</th>
-                                                <th>Edit</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="text-center">
-                                            <tr>
-                                                <td colspan="8">กรุณาเลือก Lot</td>
-                                                <td hidden></td>
-                                                <td hidden></td>
-                                                <td hidden></td>
-                                                <td hidden></td>
-                                                <td hidden></td>
-                                                <td hidden></td>
-                                                <td hidden></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                        </div>
+                    </div>
+                    <div class="border rounded p-0 p-sm-2" style="background: #888888;">
+                        <a id="collapseHopperOperator" class="btn btn-dark" data-toggle="collapse" aria-expanded="false"
+                            aria-controls="hopperoperator" href="#hopperoperator"
+                            role="button">รายชื่อหัวหน้ากะและผู้ช่วย</a>
+                        <div class="collapse" id="hopperoperator" style="font-size: 0.75em;">
+                            <div class="card shadow-sm">
+                                <div class="p-2 pt-4">
+                                    <form id="formHopperOp">
+                                        <div class="form-row">
+                                            <div class="col text-center"><em
+                                                    class="text-muted">ลงชื่อหัวหน้ากะและผู้ช่วยหัวหน้ากะ</em></div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="col-4 col-md-2">
+                                                <div class="form-group">
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text">
+                                                    <span>&nbsp;</span>
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text" value="กะ 1:">
+                                                    <span>&nbsp;</span>
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text" value="กะ 2:">
+                                                    <span>&nbsp;</span>
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text" value="กะ 3:">
+                                                    <span>&nbsp;</span>
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text" value="กะ 1:">
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text" value="วันที่:">
+                                                </div>
+                                            </div>
+                                            <div class="col-8 col-md-5">
+                                                <div class="form-group">
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2 text-center"
+                                                        disabled type="text" value="ผู้ช่วย">
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputALead1_1"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputALead2"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputALead3"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputALead1_2"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <input id="inputALeadDate"
+                                                        class="inputLeadDate form-control form-control-sm mb-2"
+                                                        type="date">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-4 d-md-none">
+                                                <div class="form-group">
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text">
+                                                    <span>&nbsp;</span>
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text" value="กะ 1:">
+                                                    <span>&nbsp;</span>
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text" value="กะ 2:">
+                                                    <span>&nbsp;</span>
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text" value="กะ 3:">
+                                                    <span>&nbsp;</span>
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text" value="กะ 1:">
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2"
+                                                        disabled type="text" value="วันที่:">
+                                                </div>
+                                            </div>
+                                            <div class="col-8 col-md-5">
+                                                <div class="form-group">
+                                                    <input
+                                                        class=" border-0 bg-transparent form-control form-control-sm mb-2 text-center"
+                                                        disabled type="text" value="หัวหน้ากะ">
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputLead1_1"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputLead2"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputLead3"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <div>
+                                                        <span>&nbsp;</span>
+                                                        <input id="inputLead1_2"
+                                                            class="inputLeadUser form-control form-control-sm mb-2"
+                                                            type="text">
+                                                    </div>
+                                                    <input id="inputLeadDate"
+                                                        class="inputLeadDate form-control form-control-sm mb-2"
+                                                        type="date">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-success btn-sm text-nowrap mx-2" id="buttonHopperOp"
+                                            type="submit">บันทึก</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -440,7 +431,7 @@
         </div>
     </div>
     <script src="js/jquery.min.js"></script>
-    <script src="sweetalert2/dist/sweetalert2.min.js"></script>
+    <script src="js/swalalert2.js"></script>
     <script src="datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="js/bs-init.js"></script>
