@@ -22,13 +22,13 @@ router.post("/login", async (req, res, next) => {
 
     const location = await pool.request().query(`SELECT LocationName
     FROM [MasterLocation] WHERE LocID = ${LocID}`);
-    const { UserId, Name, Surname } = login.recordset[0];
+    const { UserId, Name } = login.recordset[0];
     // let auth = await pool.request().query(`SELECT * FROM [MasterPosition]
     //   WHERE PositionId = ${PositionId}`);
     req.session.isLoggedIn = true;
     req.session.UserId = UserId;
     // req.session.Auth = auth.recordset[0];
-    res.cookie("Name", `${Name} ${Surname}`, { maxAge: process.env.SESSION_TIME });
+    res.cookie("Name", Name, { maxAge: process.env.SESSION_TIME });
     res.cookie("Location", location.recordset[0].LocationName, { maxAge: process.env.SESSION_TIME });
     res.redirect("/");
   } catch (err) {

@@ -11,7 +11,7 @@ router.get("/hopper-record", ifNotLoggedIn, (req, res) => {
     res.render("HopperRecord");
 });
 
-router.get("/login", ifLoggedIn, (req, res) => {
+router.get("/login", (req, res) => {
     res.render("login");
 });
 

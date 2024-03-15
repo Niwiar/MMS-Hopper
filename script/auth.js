@@ -11,14 +11,25 @@ $('#buttonLogin').on('click', async (e) => {
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ Username, Password, LocID }),
-        beforeSend: () => Swal.showLoading()
+        beforeSend: () => {
+            // Swal.showLoading()
+        }
     }).fail((err) =>{
-        Swal.hideLoading()
+        resetForm()
+        // Swal.hideLoading()
         Swal.fire({ icon: 'error', title: 'Login Failed', text: err.responseJSON.message })
     }
-    
-    ).done(() => window.location.href = '/')
+    ).done(() => {
+        resetForm()
+        // Swal.hideLoading()
+        window.location.href = '/'
+    })
 })
+
+const resetForm = ()=>{
+    $('#inputUsername').val("")
+    $('#inputPassword').val("")
+}
 
 $('#buttonLogout').on('click', () =>
     $.ajax({ url: '/auth/logout', type: 'POST', }).done(() => window.location.href = '/login')

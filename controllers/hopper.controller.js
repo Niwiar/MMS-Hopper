@@ -52,7 +52,8 @@ exports.getLogHopperRec = async (ProdDate, RecpNameID) => {
         DATEDIFF(minute,loghr.StartTime,loghr.BatchEndTime) Duration, mu.Name ProdName
       FROM [LogHopperRec] loghr
       LEFT JOIN [MasterUser] mu on loghr.ProdUser = mu.Username
-      WHERE loghr.ProdDate = '${ProdDate}' AND loghr.RecpNameID = ${RecpNameID}`
+      WHERE loghr.ProdDate = '${ProdDate}' AND loghr.RecpNameID = ${RecpNameID}
+      ORDER BY loghr.BatchNo`
   );
   return logHopperRec.recordset;
 };

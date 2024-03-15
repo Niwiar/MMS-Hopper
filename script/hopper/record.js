@@ -31,14 +31,14 @@ const dropdownPlan = (ProdDate) => {
     success: function (res) {
       $("#filterRecipe").empty();
       $("#filterRecipe").append(
-        `<option value="" selected="">กรุณาเลือกสูตร</option>`
+        `<option value="">กรุณาเลือกสูตร</option>`
       );
-      res.forEach((data) => {
-        if (data.LotNo)
+      res.filter(data=>data.LotNo).forEach((data,i) => {
           $("#filterRecipe").append(
-            `<option value="${data.RecpNameID}" data-lotno="${data.LotNo}">${data.RecpName}</option>`
+            `<option value="${data.RecpNameID}" data-lotno="${data.LotNo}" ${i==0?'selected':''}>${data.RecpName}</option>`
           );
       });
+      checkRecipe()
     },
   });
 };
@@ -75,7 +75,12 @@ const getHopperRecTable = (ProdDate, RecpNameID) => {
       {
         data: "Shift",
         render: function (data, type, row) {
-          return data;
+          
+          return `<select disabled class="w-auto border rounded form-control form-control-sm" name="Shift"'>
+              <option value="1" ${data==1?'selected':''}>1</option>
+              <option value="2" ${data==2?'selected':''}>2</option>
+              <option value="3" ${data==3?'selected':''}>3</option>
+          </select>`;
         },
       },
       {
@@ -226,13 +231,17 @@ filterProdDate.on("change", () => {
 });
 
 filterRecipe.on("change", () => {
+  checkRecipe()
+});
+
+const checkRecipe =()=>{
   const LotNo = filterRecipe.find("option:selected").data("lotno");
   resetHopper()
   if(LotNo){
     filterLotNo.val(LotNo);
     searchHopper()
   }
-});
+}
 
 // filter.on("change", () => {
 //   if (filterProdDate.val() && filterRecipe.val())
@@ -283,6 +292,13 @@ function resetHopper(){
     </tr>`);
   disabledFilter.attr("disabled", true);
   disabledRec.attr("disabled", true);
+}
+
+const resetRecordForm=()=>{
+  $("#inputLotNo").val('');
+  $("#inputProdDate").val('');
+  $("#inputBatchNo").val('');
+  $("#inputRecpName").val('');
 }
 
 function searchHopper(){
@@ -409,10 +425,11 @@ function searchHopper(){
   $("#inputQrCode").off("keyup change");
   $("#inputQrCode").on("keyup change", () => {
     disabledRec.attr("disabled", true);
-    const QrCode = $("#inputQrCode").val().split("-");
+    const QrCode = $("#inputQrCode").val().trim().split("-");
     // LotNo-RecpNameID-BatchNo-LogRawMatBatchGrind_LogID:23E2112801-010-001-001
     // 190254
-    console.log(QrCode);
+    // alert(QrCode);
+    resetRecordForm()
     if (QrCode.length !== 4) {
       Swal.fire({
         icon: "error",
@@ -421,7 +438,8 @@ function searchHopper(){
       });
       $("#inputQrCode").val("");
       return;
-    } else if (QrCode[0] !== fLotNo) {
+    } else
+    if (QrCode[0] !== fLotNo) {
       Swal.fire({
         icon: "error",
         title: "Scan Failed",
@@ -438,6 +456,11 @@ function searchHopper(){
       $("#inputQrCode").val("");
       return;
     }
+    Swal.fire({
+      icon: "success",
+      title: "Scan Success",
+      text: "QR Code ถูกต้อง",
+    });
     $("#inputLotNo").val(QrCode[0]);
     $("#inputProdDate").val(fProdDate);
     $("#inputBatchNo").val(parseInt(QrCode[2]));
@@ -487,6 +510,7 @@ function searchHopper(){
   $("#tbHopperRec").on("click", ".btnEditRec", function (e) {
     let tr = $($(this).closest("tr"));
     tr.find("input").removeAttr("disabled");
+    tr.find("select").removeAttr("disabled");
     tr.find(".btnSaveRec").removeAttr("hidden");
     tr.find(".btnEditRec").attr("hidden", true);
 
@@ -494,10 +518,12 @@ function searchHopper(){
     $("#tbHopperRec").on("click", ".btnSaveRec", function (e) {
       let tr = $(this).closest("tr");
       let input = $(tr).find("input").toArray();
+      let select = $(tr).find("select").toArray();
       let data = { LogID: tbHopperRec.row(tr).data().LogID };
       input.forEach((el) => (data[`${$(el).attr("name")}`] = $(el).val()));
-      console.log(data);
+      select.forEach((el) => (data[`${$(el).attr("name")}`] = $(el).val()));
       $(tr).find("input").attr("disabled", true);
+      $(tr).find("select").attr("disabled", true);
       $(tr).find(".btnSaveRec").attr("hidden", true);
       $(tr).find(".btnEditRec").removeAttr("hidden");
       saveHopperRec("PUT", data);
@@ -512,21 +538,23 @@ const saveHopperRec = (type, data) => {
     contentType: "application/json",
     data: JSON.stringify(data),
     beforeSend: () => Swal.showLoading(),
-  })
-    .fail((err) =>
-      Swal.fire({
-        icon: "error",
-        title: "Save Failed",
-        text: err.responseJSON.message,
-      })
-    )
-    .done(() => {
-      tbHopperRec.ajax.reload(null, false);
-      if(type=='POST') $('#formHopperRec').trigger('reset')
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "บันทึกข้อมูลสำเร็จ",
-      });
+  }).fail((err) =>{
+    disabledRec.removeAttr("disabled");
+    Swal.fire({
+      icon: "error",
+      title: "Save Failed",
+      text: err.responseJSON.message,
+    })
+  }).done(() => {
+    tbHopperRec.ajax.reload(null, false);
+    if(type=='POST') {
+      $('#formHopperRec').trigger('reset')
+      $('#textProdName').text('')
+    }
+    Swal.fire({
+      icon: "success",
+      title: "Success",
+      text: "บันทึกข้อมูลสำเร็จ",
     });
+  });
 };

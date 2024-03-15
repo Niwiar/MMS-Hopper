@@ -14,6 +14,7 @@ const {
   getPlanInfo,
 } = require("../../controllers/hopper.controller");
 const createHttpError = require("http-errors");
+const { checkDup } = require("../../libs/sqlUtils");
 
 router.get("/", async (req, res, next) => {
   try {
@@ -44,35 +45,52 @@ router.get("/report", async (req, res, next) => {
   try {
     const { ProdDate, RecpNameID } = req.query;
     const plan = await getPlanInfo(ProdDate, RecpNameID);
-    if(!plan)return next(createHttpError(404,'ไม่มีข้อมูลแผน'));
-    const {LotNo,RecpName} = plan
+    if (!plan) return next(createHttpError(404, "ไม่มีข้อมูลแผน"));
+    const { LotNo, RecpName } = plan;
     const logHopperRec = await getLogHopperRec(ProdDate, RecpNameID);
     const logHopperDwt = await getLogHopperDwt(ProdDate, RecpNameID);
     const logHopperOp = await getLogHopperOp(ProdDate, RecpNameID);
 
-    if (logHopperRec.length==0) return next(createHttpError(404,'ไม่มีข้อมูลการบันทึก'));
+    if (logHopperRec.length == 0)
+      return next(createHttpError(404, "ไม่มีข้อมูลการบันทึก"));
 
-    let logHopperOpArr = []
-    logHopperOp.forEach((item) =>{
-        logHopperOpArr.push([
-        `กะ1 : ${item.ALead1_1Name||'-'}`,'','',
-        `กะ2 : ${item.ALead2Name||'-'}`,'',
-        `กะ3 : ${item.ALead3Name||'-'}`,'','',
-        `กะ1 : ${item.ALead1_2Name||'-'}`,'',
-        `วันที่ : ${item.ALeadDate?dymDate(item.ALeadDate):'-'}`
-      ])
+    let logHopperOpArr = [];
+    logHopperOp.forEach((item) => {
       logHopperOpArr.push([
-        `กะ1 : ${item.Lead1_1Name||'-'}`,'','',
-        `กะ2 : ${item.Lead2Name||'-'}`,'',
-        `กะ3 : ${item.Lead3Name||'-'}`,'','',
-        `กะ1 : ${item.Lead1_2Name||'-'}`,'',
-        `วันที่ : ${item.LeadDate?dymDate(item.LeadDate):'-'}`
-      ])
+        `กะ1 : ${item.ALead1_1Name || "-"}`,
+        "",
+        "",
+        `กะ2 : ${item.ALead2Name || "-"}`,
+        "",
+        `กะ3 : ${item.ALead3Name || "-"}`,
+        "",
+        "",
+        `กะ1 : ${item.ALead1_2Name || "-"}`,
+        "",
+        `วันที่ : ${item.ALeadDate ? dymDate(item.ALeadDate) : "-"}`,
+      ]);
+      logHopperOpArr.push([
+        `กะ1 : ${item.Lead1_1Name || "-"}`,
+        "",
+        "",
+        `กะ2 : ${item.Lead2Name || "-"}`,
+        "",
+        `กะ3 : ${item.Lead3Name || "-"}`,
+        "",
+        "",
+        `กะ1 : ${item.Lead1_2Name || "-"}`,
+        "",
+        `วันที่ : ${item.LeadDate ? dymDate(item.LeadDate) : "-"}`,
+      ]);
     });
 
     let logHopperRecArr = logHopperRec.map((item) => [
-      item.ProdDate, item.BatchNo, item.Shift,
-      item.StartTime, item.BatchEndTime, item.Duration,
+      item.ProdDate,
+      item.BatchNo,
+      item.Shift,
+      item.StartTime,
+      item.BatchEndTime,
+      item.Duration,
       item.ProdName,
     ]);
 
@@ -105,7 +123,7 @@ router.get("/report", async (req, res, next) => {
 
     await writeFile(wb, "HopperReport.xlsx");
     let file = path.join(process.cwd(), "/public/temp/HopperReport.xlsx");
-    res.status(200).send({FilePath:file});
+    res.status(200).send({ FilePath: file });
   } catch (err) {
     next(err);
   }
@@ -114,35 +132,52 @@ router.get("/report/download", async (req, res, next) => {
   try {
     const { ProdDate, RecpNameID } = req.query;
     const plan = await getPlanInfo(ProdDate, RecpNameID);
-    if(!plan)return next(createHttpError(404,'ไม่มีข้อมูลแผน'));
-    const {LotNo,RecpName} = plan
+    if (!plan) return next(createHttpError(404, "ไม่มีข้อมูลแผน"));
+    const { LotNo, RecpName } = plan;
     const logHopperRec = await getLogHopperRec(ProdDate, RecpNameID);
     const logHopperDwt = await getLogHopperDwt(ProdDate, RecpNameID);
     const logHopperOp = await getLogHopperOp(ProdDate, RecpNameID);
 
-    if (logHopperRec.length==0) return next(createHttpError(404,'ไม่มีข้อมูลการบันทึก'));
+    if (logHopperRec.length == 0)
+      return next(createHttpError(404, "ไม่มีข้อมูลการบันทึก"));
 
-    let logHopperOpArr = []
-    logHopperOp.forEach((item) =>{
-        logHopperOpArr.push([
-        `กะ1 : ${item.ALead1_1Name||'-'}`,'','',
-        `กะ2 : ${item.ALead2Name||'-'}`,'',
-        `กะ3 : ${item.ALead3Name||'-'}`,'','',
-        `กะ1 : ${item.ALead1_2Name||'-'}`,'',
-        `วันที่ : ${item.ALeadDate?dymDate(item.ALeadDate):'-'}`
-      ])
+    let logHopperOpArr = [];
+    logHopperOp.forEach((item) => {
       logHopperOpArr.push([
-        `กะ1 : ${item.Lead1_1Name||'-'}`,'','',
-        `กะ2 : ${item.Lead2Name||'-'}`,'',
-        `กะ3 : ${item.Lead3Name||'-'}`,'','',
-        `กะ1 : ${item.Lead1_2Name||'-'}`,'',
-        `วันที่ : ${item.LeadDate?dymDate(item.LeadDate):'-'}`
-      ])
+        `กะ1 : ${item.ALead1_1Name || "-"}`,
+        "",
+        "",
+        `กะ2 : ${item.ALead2Name || "-"}`,
+        "",
+        `กะ3 : ${item.ALead3Name || "-"}`,
+        "",
+        "",
+        `กะ1 : ${item.ALead1_2Name || "-"}`,
+        "",
+        `วันที่ : ${item.ALeadDate ? dymDate(item.ALeadDate) : "-"}`,
+      ]);
+      logHopperOpArr.push([
+        `กะ1 : ${item.Lead1_1Name || "-"}`,
+        "",
+        "",
+        `กะ2 : ${item.Lead2Name || "-"}`,
+        "",
+        `กะ3 : ${item.Lead3Name || "-"}`,
+        "",
+        "",
+        `กะ1 : ${item.Lead1_2Name || "-"}`,
+        "",
+        `วันที่ : ${item.LeadDate ? dymDate(item.LeadDate) : "-"}`,
+      ]);
     });
 
     let logHopperRecArr = logHopperRec.map((item) => [
-      item.ProdDate, item.BatchNo, item.Shift,
-      item.StartTime, item.BatchEndTime, item.Duration,
+      item.ProdDate,
+      item.BatchNo,
+      item.Shift,
+      item.StartTime,
+      item.BatchEndTime,
+      item.Duration,
       item.ProdName,
     ]);
 
@@ -193,10 +228,22 @@ router.post("/", async (req, res, next) => {
       BatchEndTime,
     } = req.body;
     const pool = await sql.connect(dbconfig);
-
+    const DupID = await checkDup(
+      "LogID",
+      "LogHopperRec",
+      `ProdDate = '${ProdDate}' AND RecpNameID = ${RecpNameID} AND BatchNo = '${BatchNo}'`
+    );
+    if (DupID)
+      return next(createHttpError(400, "มีการบันทึกแบชนี้แล้ว, กรุณาสแกน QR Code แบชอื่น"));
+    if (!StartTime || !ProdUser)
+      return next(createHttpError(400, "กรุณากรอกรหัสผู้ปฏิบัติงานและเวลาเริ่มเท"));
+    const Username = await checkDup("Username","MasterUser",`Username = N'${ProdUser}'`);
+    if (!Username) return next(createHttpError(400, "ไม่พบรหัสพนักงาน"));
     await pool.request()
       .query(`INSERT INTO LogHopperRec(ProdDate,RecpNameID,BatchNo,Shift,ProdUser,StartTime,BatchEndTime) 
-            VALUES('${ProdDate}',${RecpNameID},'${BatchNo}',${Shift},N'${ProdUser}','${StartTime}','${BatchEndTime}')`);
+        VALUES('${ProdDate}',${RecpNameID},'${BatchNo}',${Shift},N'${ProdUser}','${StartTime}', ${
+      BatchEndTime ? `'${BatchEndTime}'` : null
+    })`);
 
     res.status(200).send({ messages: "ok" });
   } catch (err) {
@@ -206,11 +253,10 @@ router.post("/", async (req, res, next) => {
 
 router.put("/", async (req, res, next) => {
   try {
-    const { LogID, StartTime, BatchEndTime } = req.body;
+    const { LogID, Shift, StartTime, BatchEndTime } = req.body;
     const pool = await sql.connect(dbconfig);
-
     await pool.request().query(`UPDATE LogHopperRec
-            SET StartTime = '${StartTime}', BatchEndTime = '${BatchEndTime}'
+            SET Shift = ${Shift}, StartTime = '${StartTime}', BatchEndTime = '${BatchEndTime}'
             WHERE LogID = ${LogID}`);
 
     res.status(200).send({ messages: "ok" });

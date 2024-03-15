@@ -128,8 +128,9 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-6 col-md-3 col-xl-4">
-                                                            <div class="form-group"><label
-                                                                    style="font-size: 0.75em;">กะ</label><select
+                                                            <div class="form-group">
+                                                                <label style="font-size: 0.75em;">กะ</label>
+                                                                <select
                                                                     id="inputShift"
                                                                     class="form-control form-control-sm">
                                                                     <option value="1" selected="">1</option>
@@ -196,7 +197,7 @@
                         <div class="col">
                             <div class="table-responsive table mt-2 shadow" id="tableRawMatHistory" role="grid"
                                 aria-describedby="dataTable_info" style="font-size: 13px;">
-                                <table class="table table-bordered my-0 display" id="tbHopperRec">
+                                <table class="table table-bordered my-0 display text-nowrap" id="tbHopperRec">
                                     <thead class="text-center" style="background: rgb(226,252,255);">
                                         <tr>
                                             <th>วันที่ผลิต</th>
@@ -230,7 +231,7 @@
                 <div class="card">
                     <div class="border rounded p-0 p-sm-2" style="background: #888888;">
                         <a id="collapseHopperDowntime" class="btn btn-dark" data-toggle="collapse" aria-expanded="false"
-                            aria-controls="hopperdowntime" href="#hopperdowntime" role="button">เวลารอผง</a>
+                            aria-controls="hopperdowntime" href="#hopperdowntime" role="button">ปัญหาที่พบ</a>
                         <div class="collapse" id="hopperdowntime" style="font-size: 0.75em;">
                             <div class="card shadow-sm">
                                 <div class="p-2 pt-4">
@@ -251,6 +252,7 @@
                                                                 <option data-isDefault="1" value="เครื่อง Dry เสีย">
                                                                 <option data-isDefault="1" value="ห้อง Pack เสีย">
                                                                 <option data-isDefault="1" value="ไฟดับ">
+                                                                <option data-isDefault="1" value="แซะไซโคลน">
                                                             </datalist>
                                                             <table class="table table-bordered my-0 display"
                                                                 id="tbHopperDwt">
@@ -435,7 +437,7 @@
     <script src="datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="js/bs-init.js"></script>
-    <script src="/js/DateTime.js"></script>
+    <script src="js/DateTime.js"></script>
     <script src="cookie.js"></script>
     <script src="auth.js"></script>
     <script src="/hopper/record.js"></script>
