@@ -1,6 +1,6 @@
 const ifNotLoggedIn = (req, res, next) => {
   if (!req.session.isLoggedIn) {
-    return res.redirect("/login");
+    return res.redirect(`/login?redirectFrom=${req.url}`);
   }
   next();
 };
@@ -15,16 +15,21 @@ const ifLoggedIn = (req, res, next) => {
 const isAuth = (page) => {
   return (req, res, next) => {
     let auth = req.session.Auth;
-    if (page == 'Master' && auth['MasterMold'] == 0 && auth['MasterProblem'] == 0 &&
-      auth['MasterMfg'] == 0 && auth['MasterDm'] == 0 && auth['MasterPosition'] == 0) {
-      req.flash("errTitle", "Error")
-      req.flash("errText", "No Permission to access")
+    if (
+      page == "Master" &&
+      auth["MasterMold"] == 0 &&
+      auth["MasterProblem"] == 0 &&
+      auth["MasterMfg"] == 0 &&
+      auth["MasterDm"] == 0 &&
+      auth["MasterPosition"] == 0
+    ) {
+      req.flash("errTitle", "Error");
+      req.flash("errText", "No Permission to access");
       return res.redirect("/error");
       // return res.status(403).send({ message: "No Permission to access" });
-
     } else if (auth[page] == 0) {
-      req.flash("errTitle", "Error")
-      req.flash("errText", "No Permission to access")
+      req.flash("errTitle", "Error");
+      req.flash("errText", "No Permission to access");
       return res.redirect("/error");
       // return res.status(403).send({ message: "No Permission to access" });
     }

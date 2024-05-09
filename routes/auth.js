@@ -5,11 +5,12 @@ const dbconfig = require("../libs/dbconfig");
 const createHttpError = require("http-errors");
 require("dotenv").config();
 
-router.get('/', (req, res, next) => {
-  if (!req.session.isLoggedIn) return res.sendStatus(400)
-  res.status(200).send({ Name: req.session.Name, Location: req.session.Location })
-}
-)
+router.get("/", (req, res, next) => {
+  if (!req.session.isLoggedIn) return res.sendStatus(400);
+  res
+    .status(200)
+    .send({ Name: req.session.Name, Location: req.session.Location });
+});
 
 router.post("/login", async (req, res, next) => {
   try {
@@ -18,7 +19,8 @@ router.post("/login", async (req, res, next) => {
     const login = await pool.request().query(`SELECT *
         FROM [MasterUser]
         WHERE Username = N'${Username}' AND Password = N'${Password}'`);
-    if (!login.recordset.length) return next(createHttpError(401, "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"));
+    if (!login.recordset.length)
+      return next(createHttpError(401, "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"));
 
     const location = await pool.request().query(`SELECT LocationName
     FROM [MasterLocation] WHERE LocID = ${LocID}`);
@@ -29,7 +31,9 @@ router.post("/login", async (req, res, next) => {
     req.session.UserId = UserId;
     // req.session.Auth = auth.recordset[0];
     res.cookie("Name", Name, { maxAge: process.env.SESSION_TIME });
-    res.cookie("Location", location.recordset[0].LocationName, { maxAge: process.env.SESSION_TIME });
+    res.cookie("Location", location.recordset[0].LocationName, {
+      maxAge: process.env.SESSION_TIME,
+    });
     res.redirect("/");
   } catch (err) {
     next(err);

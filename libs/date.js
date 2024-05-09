@@ -48,6 +48,17 @@ const checkDate = (date = new Date()) => {
   return yyyy + "-" + mm + "-" + dd;
 };
 
+const addDate = (date = new Date(), number) => {
+  var tomorrow = new Date(date);
+  tomorrow.setDate(tomorrow.getDate() + number);
+  let dd = tomorrow.getDate();
+  let mm = tomorrow.getMonth() + 1;
+  let yyyy = tomorrow.getFullYear();
+  if (dd < 10) dd = "0" + dd;
+  if (mm < 10) mm = "0" + mm;
+  return yyyy + "-" + mm + "-" + dd;
+};
+
 const checkDateTime = (date = new Date()) => {
   let today = new Date(date);
   let hh = today.getHours().toString().padStart(2, "0");
@@ -153,4 +164,5 @@ module.exports = {
   ymDateTh,
   diffDate,
   diffMin,
+  addDate,
 };

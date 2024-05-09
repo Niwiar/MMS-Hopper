@@ -4,6 +4,7 @@ const sql = require("mssql");
 const dbconfig = require("../../libs/dbconfig");
 const createError = require("http-errors");
 const { getLogHopperDwt } = require("../../controllers/hopper.controller");
+const { diffMin, addDate } = require("../../libs/date");
 
 router.get("/", async (req, res, next) => {
   try {
@@ -36,8 +37,17 @@ router.put("/", async (req, res, next) => {
 
     for (const dwt of Downtimes) {
       const { LogID, StartTime, EndTime, IsOther, Cause } = dwt;
-      const StartDatetime = StartTime ? `'${ProdDate} ${StartTime}'` : null;
-      const EndDatetime = EndTime ? `'${ProdDate} ${EndTime}'` : null;
+      let StartDatetime = StartTime ? `'${ProdDate} ${StartTime}'` : null;
+      let EndDatetime = EndTime ? `'${ProdDate} ${EndTime}'` : null;
+      if (
+        StartDatetime &&
+        EndDatetime &&
+        diffMin(
+          StartDatetime.replaceAll("'", ""),
+          EndDatetime.replaceAll("'", "")
+        ) < 0
+      )
+        EndDatetime = `'${addDate(ProdDate, 1)} ${EndTime}'`;
       await pool.request().query(`UPDATE LogHopperDwt
         SET StartTime = ${StartDatetime}, EndTime = ${EndDatetime},
             IsOther = ${IsOther}, Cause = ${Cause ? `N'${Cause}'` : null}

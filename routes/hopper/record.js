@@ -4,7 +4,7 @@ const sql = require("mssql");
 const dbconfig = require("../../libs/dbconfig");
 const path = require("path");
 const XlsxPopulate = require("xlsx-populate");
-const { dymDate } = require("../../libs/date");
+const { dymDate, diffMin, addDate } = require("../../libs/date");
 const { fillDataTemplate, writeFile } = require("../../libs/reportUtil");
 const {
   getLogHopperRec,
@@ -234,16 +234,33 @@ router.post("/", async (req, res, next) => {
       `ProdDate = '${ProdDate}' AND RecpNameID = ${RecpNameID} AND BatchNo = '${BatchNo}'`
     );
     if (DupID)
-      return next(createHttpError(400, "มีการบันทึกแบชนี้แล้ว, กรุณาสแกน QR Code แบชอื่น"));
+      return next(
+        createHttpError(400, "มีการบันทึกแบชนี้แล้ว, กรุณาสแกน QR Code แบชอื่น")
+      );
     if (!StartTime || !ProdUser)
-      return next(createHttpError(400, "กรุณากรอกรหัสผู้ปฏิบัติงานและเวลาเริ่มเท"));
-    const Username = await checkDup("Username","MasterUser",`Username = N'${ProdUser}'`);
+      return next(
+        createHttpError(400, "กรุณากรอกรหัสผู้ปฏิบัติงานและเวลาเริ่มเท")
+      );
+    const Username = await checkDup(
+      "Username",
+      "MasterUser",
+      `Username = N'${ProdUser}'`
+    );
     if (!Username) return next(createHttpError(400, "ไม่พบรหัสพนักงาน"));
+    let StartDatetime = StartTime ? `'${ProdDate} ${StartTime}'` : null;
+    let EndDatetime = BatchEndTime ? `'${ProdDate} ${BatchEndTime}'` : null;
+    if (
+      StartDatetime &&
+      EndDatetime &&
+      diffMin(
+        StartDatetime.replaceAll("'", ""),
+        EndDatetime.replaceAll("'", "")
+      ) < 0
+    )
+      EndDatetime = `'${addDate(ProdDate, 1)} ${BatchEndTime}'`;
     await pool.request()
       .query(`INSERT INTO LogHopperRec(ProdDate,RecpNameID,BatchNo,Shift,ProdUser,StartTime,BatchEndTime) 
-        VALUES('${ProdDate}',${RecpNameID},'${BatchNo}',${Shift},N'${ProdUser}','${StartTime}', ${
-      BatchEndTime ? `'${BatchEndTime}'` : null
-    })`);
+        VALUES('${ProdDate}',${RecpNameID},'${BatchNo}',${Shift},N'${ProdUser}',${StartDatetime}, ${EndDatetime})`);
 
     res.status(200).send({ messages: "ok" });
   } catch (err) {
@@ -253,10 +270,21 @@ router.post("/", async (req, res, next) => {
 
 router.put("/", async (req, res, next) => {
   try {
-    const { LogID, Shift, StartTime, BatchEndTime } = req.body;
+    const { LogID, Shift, ProdDate, StartTime, BatchEndTime } = req.body;
     const pool = await sql.connect(dbconfig);
+    let StartDatetime = StartTime ? `'${ProdDate} ${StartTime}'` : null;
+    let EndDatetime = BatchEndTime ? `'${ProdDate} ${BatchEndTime}'` : null;
+    if (
+      StartDatetime &&
+      EndDatetime &&
+      diffMin(
+        StartDatetime.replaceAll("'", ""),
+        EndDatetime.replaceAll("'", "")
+      ) < 0
+    )
+      EndDatetime = `'${addDate(ProdDate, 1)} ${BatchEndTime}'`;
     await pool.request().query(`UPDATE LogHopperRec
-            SET Shift = ${Shift}, StartTime = '${StartTime}', BatchEndTime = '${BatchEndTime}'
+            SET Shift = ${Shift}, StartTime = ${StartDatetime}, BatchEndTime = ${EndDatetime}
             WHERE LogID = ${LogID}`);
 
     res.status(200).send({ messages: "ok" });
