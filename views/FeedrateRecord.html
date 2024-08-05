@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>MMS | Hopper History</title>
+    <title>MMS | Feedrate Record</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="datatables.net-dt/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="fonts/google-exo.css">
@@ -49,13 +49,12 @@
     <div class="container px-0 px-sm-3">
         <div class="card shadow w-100">
             <div class="card-header bg-dark">
-                <h4 class="text-center text-light">ประวัติบันทึกการเติมฮอปเปอร์</h4>
+                <h4 class="text-center text-light">ระบบบันทึกอัตราการอบแห้ง</h4>
             </div>
             <div class="card-body">
                 <form>
                     <div class="form-row">
-                        <div class="col text-right"><a class="btn btn-secondary btn-sm" role="button"
-                                href="http://192.168.0.102:8080/Hopper/HopperReport">Back</a>
+                        <div class="col text-right"><a class="btn btn-secondary btn-sm" role="button" href="/">Back</a>
                         </div>
                     </div>
                     <div class="form-row">
@@ -77,34 +76,104 @@
                                     readonly id="filterLotNo"></div>
                         </div>
                         <!-- <div class="col align-self-center"><button class="btn btn-primary btn-sm" type="button"
-                                id="buttonHopperSearch">เลือก
+                                id="buttonFeedrateSearch">เลือก
                                 Lot</button></div> -->
                     </div>
                 </form>
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">บันทึกอัตราการอบแห้ง</h5>
+                        <div class="row">
+                            <div class="col">
+                                <form id="formFeedrateRec">
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <div class="form-row">
+                                                <div class="col-6 col-md-4 col-xl-3">
+                                                    <div class="form-group"><label
+                                                            style="font-size: 0.75em;">วันที่:</label><input
+                                                            id="inputRecTime"
+                                                            class="form-control form-control-sm" type="datetime"
+                                                            ></div>
+                                                </div>
+                                                <div class="col-6 col-md-2 col-xl-3">
+                                                    <div class="form-group">
+                                                        <label style="font-size: 0.75em;">กะ</label>
+                                                        <select
+                                                            id="inputShift"
+                                                            class="form-control form-control-sm">
+                                                            <option value="1" selected="">1</option>
+                                                            <option value="2">2</option>
+                                                            <option value="3">3</option>
+                                                        </select>
+                                                        <div class="input-group input-group-sm">
+                                                            <div class="input-group-prepend"></div>
+                                                            <div class="input-group-append"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-6 col-xl-6">
+                                                    <div class="form-group"><label
+                                                        style="font-size: 0.75em;">ผู้ปฎิบัติงาน
+                                                        : <span id="textProdName"></span></label><input
+                                                        id="inputProdUser"
+                                                        class="form-control form-control-sm" type="text"
+                                                        style="text-align: center;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="form-row align-items-end">
+                                                <div class="col-6 col-md-4 col-xl-3">
+                                                    <div class="form-group"><label
+                                                            style="font-size: 0.75em;">น้ำหนัก:</label><input
+                                                            id="inputWeight"
+                                                            class="form-control form-control-sm" type="number"
+                                                            ></div>
+                                                </div>
+                                                <div class="col-6 col-md-4 col-xl-3">
+                                                    <div class="form-group"><label
+                                                            style="font-size: 0.75em;">อัตราการอบแห้ง:</label><input
+                                                            id="inputFeedrate"
+                                                            class="form-control form-control-sm" type="number"
+                                                            ></div>
+                                                </div>
+                                                <div class="col text-center text-md-right">
+                                                    <div class="form-group"><button
+                                                        class="btn btn-info text-nowrap mx-2" id="buttonFeedrateRec"
+                                                        type="submit">บันทึก</button></div></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="card"> -->
                 <div>
+                    <form>
+                        <div class="form-row">
+                            <div class="col p-2">
+                                <h4>วันที่ : <span id="selectedDate">-</span></h4>
+                            </div>
+                        </div>
+                    </form>
                     <div class="row">
                         <div class="col">
                             <div class="table-responsive table mt-2 shadow" id="tableRawMatHistory" role="grid"
                                 aria-describedby="dataTable_info" style="font-size: 13px;">
-                                <table class="table table-bordered my-0 display text-nowrap" id="tbHopperRec">
+                                <table class="table table-bordered my-0 display text-nowrap" id="tbFeedrateRec">
                                     <thead class="text-center" style="background: rgb(226,252,255);">
                                         <tr>
-                                            <th>วันที่ผลิต</th>
-                                            <th>แบช</th>
+                                            <th>วันที่บันทึก</th>
                                             <th>กะ</th>
-                                            <th>เวลาเริ่มเท</th>
-                                            <th>เวลาจบแบช</th>
-                                            <th>ระยะเวลา (นาที)</th>
+                                            <th>อัตราการอบแห้ง</th>
                                             <th>ผู้ปฏิบัติ</th>
                                             <th>Edit</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-center">
                                         <tr>
-                                            <td colspan="8">กรุณาเลือก Lot</td>
-                                            <td hidden></td>
-                                            <td hidden></td>
-                                            <td hidden></td>
+                                            <td colspan="5">กรุณาเลือก Lot</td>
                                             <td hidden></td>
                                             <td hidden></td>
                                             <td hidden></td>
@@ -119,30 +188,33 @@
                 <!-- </div> -->
                 <div class="card">
                     <div class="border rounded p-0 p-sm-2" style="background: #888888;">
-                        <a id="collapseHopperDowntime" class="btn btn-dark" data-toggle="collapse" aria-expanded="false"
-                            aria-controls="hopperdowntime" href="#hopperdowntime" role="button">ปัญหาที่พบ</a>
-                        <div class="collapse" id="hopperdowntime" style="font-size: 0.75em;">
+                        <a id="collapseFeedrateDowntime" class="btn btn-dark" data-toggle="collapse" aria-expanded="false"
+                            aria-controls="feedratedowntime" href="#feedratedowntime" role="button">ปัญหาที่พบ</a>
+                        <div class="collapse" id="feedratedowntime" style="font-size: 0.75em;">
                             <div class="card shadow-sm">
                                 <div class="p-2 pt-4">
                                     <form>
                                         <div class="form-row">
-                                            <div class="col text-center"><em class="text-muted">บันทึกการรอผง</em></div>
+                                            <div class="col text-center"><em class="text-muted">ปัญหาที่พบ</em></div>
                                         </div>
                                         <div class="form-row">
                                             <div class="col">
                                                 <div class="table-responsive table mt-2 w-100" id="tableWaittime"
                                                     role="grid" aria-describedby="dataTable_info"
                                                     style="font-size: 13px;">
-                                                    <datalist id="hopperDwtCause">
+                                                    <datalist id="feedrateDwtCause">
                                                         <option data-isDefault="1" value="รอ Cooking">
-                                                        <option data-isDefault="1" value="รอทำความสะอาด สกรูฟีด">
+                                                        <option data-isDefault="1"
+                                                            value="รอทำความสะอาด สกรูฟีด">
                                                         <option data-isDefault="1" value="ลิฟท์เสีย">
                                                         <option data-isDefault="1" value="เครื่อง Dry เสีย">
                                                         <option data-isDefault="1" value="ห้อง Pack เสีย">
                                                         <option data-isDefault="1" value="ไฟดับ">
                                                         <option data-isDefault="1" value="แซะไซโคลน">
                                                     </datalist>
-                                                    <table class="table table-bordered my-0 display" id="tbHopperDwt">
+                                                    <textarea id="feedrateDwt" class="form-control form-control-sm"></textarea>
+                                                    <!-- <table class="table table-bordered my-0 display"
+                                                        id="tbFeedrateDwt">
                                                         <thead class="text-center"
                                                             style="background: rgb(226,252,255);">
                                                             <tr>
@@ -162,10 +234,10 @@
                                                                 <td hidden></td>
                                                             </tr>
                                                         </tbody>
-                                                    </table>
+                                                    </table> -->
                                                 </div>
                                                 <button class="btn btn-success btn-sm text-nowrap mx-2"
-                                                    id="buttonHopperDwt" disabled type="submit">บันทึก</button>
+                                                    id="buttonFeedrateDwt" disabled type="submit">บันทึก</button>
                                             </div>
                                         </div>
                                     </form>
@@ -174,13 +246,13 @@
                         </div>
                     </div>
                     <div class="border rounded p-0 p-sm-2" style="background: #888888;">
-                        <a id="collapseHopperOperator" class="btn btn-dark" data-toggle="collapse" aria-expanded="false"
-                            aria-controls="hopperoperator" href="#hopperoperator"
+                        <a id="collapseFeedrateOperator" class="btn btn-dark" data-toggle="collapse" aria-expanded="false"
+                            aria-controls="feedrateoperator" href="#feedrateoperator"
                             role="button">รายชื่อหัวหน้ากะและผู้ช่วย</a>
-                        <div class="collapse" id="hopperoperator" style="font-size: 0.75em;">
+                        <div class="collapse" id="feedrateoperator" style="font-size: 0.75em;">
                             <div class="card shadow-sm">
                                 <div class="p-2 pt-4">
-                                    <form id="formHopperOp">
+                                    <form id="formFeedrateOp">
                                         <div class="form-row">
                                             <div class="col text-center"><em
                                                     class="text-muted">ลงชื่อหัวหน้ากะและผู้ช่วยหัวหน้ากะ</em></div>
@@ -308,7 +380,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <button class="btn btn-success btn-sm text-nowrap mx-2" id="buttonHopperOp"
+                                        <button class="btn btn-success btn-sm text-nowrap mx-2" id="buttonFeedrateOp"
                                             type="submit">บันทึก</button>
                                     </form>
                                 </div>
@@ -327,7 +399,7 @@
     <script src="js/DateTime.js"></script>
     <script src="cookie.js"></script>
     <script src="auth.js"></script>
-    <script src="/hopper/record.js"></script>
+    <script src="/feedrate/record.js"></script>
 </body>
 
 </html>

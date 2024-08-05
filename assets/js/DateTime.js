@@ -6,7 +6,7 @@ var date =
   "-" +
   String(today.getDate()).padStart(2, "0");
 var time =
-  today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  today.getHours() + ":" + String(today.getMinutes()).padStart(2, "0") + ":" + String(today.getSeconds()).padStart(2, "0");
 var dateTime = date + " " + time;
 $("#currentDateTime").text(dateTime);
 
