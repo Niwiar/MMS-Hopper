@@ -22,18 +22,28 @@ router.post("/login", async (req, res, next) => {
     if (!login.recordset.length)
       return next(createHttpError(401, "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"));
 
-    const location = await pool.request().query(`SELECT LocationName
-    FROM [MasterLocation] WHERE LocID = ${LocID}`);
     const { UserId, Name } = login.recordset[0];
     // let auth = await pool.request().query(`SELECT * FROM [MasterPosition]
     //   WHERE PositionId = ${PositionId}`);
     req.session.isLoggedIn = true;
     req.session.UserId = UserId;
     // req.session.Auth = auth.recordset[0];
-    res.cookie("Name", Name, { maxAge: process.env.SESSION_TIME });
-    res.cookie("Location", location.recordset[0].LocationName, {
+    res.cookie("Name", Name, {
       maxAge: process.env.SESSION_TIME,
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      path: "/",
     });
+    if (LocID) {
+      const location = await pool.request().query(`SELECT LocationName
+        FROM [MasterLocation] WHERE LocID = ${LocID}`);
+      res.cookie("Location", location.recordset[0].LocationName, {
+        maxAge: process.env.SESSION_TIME,
+        httpOnly: true,
+      });
+    }
+
     res.redirect("/");
   } catch (err) {
     next(err);
@@ -42,6 +52,8 @@ router.post("/login", async (req, res, next) => {
 
 router.post("/logout", (req, res, next) => {
   req.session = null;
+  res.clearCookie("Name");
+  res.clearCookie("Location");
   res.redirect("/login");
 });
 

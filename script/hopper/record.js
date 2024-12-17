@@ -3,7 +3,7 @@ let tbHopperDwt, tbHopperRec;
 const dropdownRecipe = () => {
   $.ajax({
     type: "get",
-    url: `/hopper/plan/recipes`,
+    url: `/plan/recipes`,
     contentType: "application/json; charset=utf-8",
     dataType: "json",
     success: function (res) {
@@ -25,7 +25,7 @@ const dropdownRecipe = () => {
 const dropdownPlan = (ProdDate) => {
   $.ajax({
     type: "get",
-    url: `/hopper/plan?ProdDate=${ProdDate}`,
+    url: `/plan?ProdDate=${ProdDate}`,
     contentType: "application/json; charset=utf-8",
     dataType: "json",
     success: function (res) {
@@ -254,7 +254,7 @@ const checkRecipe = () => {
 //   if (filterProdDate.val() && filterRecipe.val())
 //     $.ajax({
 //       type: "get",
-//       url: `/hopper/plan/lot?ProdDate=${filterProdDate.val()}&RecpNameID=${filterRecipe.val()}`,
+//       url: `/plan/lot?ProdDate=${filterProdDate.val()}&RecpNameID=${filterRecipe.val()}`,
 //       contentType: "application/json; charset=utf-8",
 //       dataType: "json",
 //       success: (res) => {
@@ -326,7 +326,7 @@ function searchHopper() {
     inputUser.siblings("span").html("&nbsp");
     $.ajax({
       type: "get",
-      url: `/hopper/plan/user?Username=${inputUser.val()}`,
+      url: `/plan/user?Username=${inputUser.val()}`,
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: (res) => {
@@ -489,7 +489,7 @@ function searchHopper() {
       $("#textProdName").text("");
       $.ajax({
         type: "get",
-        url: `/hopper/plan/user?Username=${$("#inputProdUser").val()}`,
+        url: `/plan/user?Username=${$("#inputProdUser").val()}`,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: (res) => {
@@ -530,10 +530,10 @@ function searchHopper() {
       let tr = $(this).closest("tr");
       let input = $(tr).find("input").toArray();
       let select = $(tr).find("select").toArray();
-      let data = { 
-      ProdDate: fProdDate,
-      LogID: tbHopperRec.row(tr).data().LogID
-       };
+      let data = {
+        ProdDate: fProdDate,
+        LogID: tbHopperRec.row(tr).data().LogID,
+      };
       input.forEach((el) => (data[`${$(el).attr("name")}`] = $(el).val()));
       select.forEach((el) => (data[`${$(el).attr("name")}`] = $(el).val()));
       $(tr).find("input").attr("disabled", true);

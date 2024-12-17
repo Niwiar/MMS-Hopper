@@ -3,7 +3,7 @@ let tbHopperDwt, tbHopperRec;
 const dropdownRecipe = () => {
   $.ajax({
     type: "get",
-    url: `/hopper/plan/recipes`,
+    url: `/plan/recipes`,
     contentType: "application/json; charset=utf-8",
     dataType: "json",
     success: function (res) {
@@ -25,7 +25,7 @@ const dropdownRecipe = () => {
 const dropdownPlan = (ProdDate) => {
   $.ajax({
     type: "get",
-    url: `/hopper/plan?ProdDate=${ProdDate}`,
+    url: `/plan?ProdDate=${ProdDate}`,
     contentType: "application/json; charset=utf-8",
     dataType: "json",
     success: function (res) {
@@ -287,7 +287,7 @@ function searchHopper() {
     inputUser.siblings("span").html("&nbsp");
     $.ajax({
       type: "get",
-      url: `/hopper/plan/user?Username=${inputUser.val()}`,
+      url: `/plan/user?Username=${inputUser.val()}`,
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: (res) => {

@@ -37,21 +37,33 @@ app.use(
   })
 );
 
+// app.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+
+//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+//   res.setHeader("Access-Control-Allow-Credentials", true);
+//   console.log(req.cookies);
+//   next();
+// });
+
 // const io = require("socket.io")(server);
 // app.set("socketio", io);
 
 const indexRoute = require("./routes/index");
 const authRoute = require("./routes/auth");
 
-const planRoute = require("./routes/hopper/plan");
+const planRoute = require("./routes/plan");
 const recordRoute = require("./routes/hopper/record");
 const downtimeRoute = require("./routes/hopper/downtime");
 const operatorRoute = require("./routes/hopper/operator");
 
 app.use("/", indexRoute);
 app.use("/auth", authRoute);
+app.use("/plan", planRoute);
 
-app.use("/hopper/plan", planRoute);
 app.use("/hopper/record", recordRoute);
 app.use("/hopper/downtime", downtimeRoute);
 app.use("/hopper/operator", operatorRoute);
