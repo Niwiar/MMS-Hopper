@@ -16,9 +16,6 @@ const dropdownRecipe = () => {
           `<option value="${data.RecpNameID}">${data.RecpName}</option>`
         );
       });
-      //TODO : Remove this on production
-      filterRecipe.val("10");
-      filterLotNo.val("23E2112801");
     },
   });
 };
