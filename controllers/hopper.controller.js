@@ -13,7 +13,8 @@ exports.getRecpName = async (RecpNameID) => {
 
 exports.getPlanInfo = async (ProdDate, RecpNameID) => {
   const pool = await sql.connect(dbconfig);
-  const Plan = await pool.request().query(`SELECT TOP 1 LotNo, RecpName, LocationName
+  const Plan = await pool.request()
+    .query(`SELECT TOP 1 LotNo, RecpName, LocationName
     FROM [viewPlanInfo]
     WHERE RecpNameID = ${RecpNameID}
         AND ProdDate = '${ProdDate}'`);
@@ -29,17 +30,21 @@ exports.getLogHopperList = async (FromDate, ToDate) => {
         loghr.RecpNameID, vpi.RecpName, vpi.LotNo, vpi.LocationName
       FROM [viewPlanInfo] vpi
       RIGHT JOIN [LogHopperRec] loghr on vpi.ProdDate = loghr.ProdDate and vpi.RecpNameID = loghr.RecpNameID
-      ${!FromDate && !ToDate ? '' : `WHERE ${fromToFilter(
-        "loghr.ProdDate",
-        FromDate || checkDate(),
-        ToDate,"")
-      }`}
+      ${
+        !FromDate && !ToDate
+          ? ""
+          : `WHERE ${fromToFilter(
+              "loghr.ProdDate",
+              FromDate || checkDate(),
+              ToDate,
+              ""
+            )}`
+      }
       GROUP BY loghr.ProdDate, loghr.RecpNameID, vpi.RecpName, vpi.LotNo, vpi.LocationName
       ORDER BY loghr.ProdDate desc`
   );
-  
-  
-  return logHopperList?.recordset||[];
+
+  return logHopperList?.recordset || [];
 };
 
 exports.getLogHopperRec = async (ProdDate, RecpNameID) => {
@@ -76,20 +81,20 @@ exports.getLogHopperOp = async (ProdDate, RecpNameID) => {
 exports.getLogHopperDwt = async (ProdDate, RecpNameID) => {
   const pool = await sql.connect(dbconfig);
   const logHopperDwt = await pool.request().query(
-    `SELECT row_number() over(order by LogID) as 'Index', LogID,
-                CONVERT(varchar,StartTime,8) StartTime,
-                CONVERT(varchar,EndTime,8) EndTime,
-                DATEDIFF(minute,StartTime,EndTime) Duration,IsOther, Cause
-            FROM [LogHopperDwt]
-            WHERE ProdDate = '${ProdDate}' AND RecpNameID = ${RecpNameID}`
+    `SELECT row_number() over(order by LogProblemID) as 'Index',LogProblemID LogID,
+      CONVERT(varchar,StartTime,8) StartTime,
+      CONVERT(varchar,EndTime,8) EndTime,
+      DATEDIFF(minute,StartTime,EndTime) Duration,IsOther, Cause
+    FROM [LogProblem]
+    WHERE ProdDate = '${ProdDate}' AND RecpNameID = ${RecpNameID} AND SectionID = 7`
   );
   return logHopperDwt.recordset;
 };
 
 exports.getLogHopperOp = async (ProdDate, RecpNameID) => {
-    const pool = await sql.connect(dbconfig);
-    const logHopperOp = await pool.request().query(
-        `SELECT LogID,
+  const pool = await sql.connect(dbconfig);
+  const logHopperOp = await pool.request().query(
+    `SELECT LogID,
             Lead1_1, ALead1_1, Lead2, ALead2,
             Lead3, ALead3, Lead1_2, ALead1_2,
             mul1_1.Name + ' ' + mul1_1.Surname Lead1_1Name,
@@ -112,6 +117,6 @@ exports.getLogHopperOp = async (ProdDate, RecpNameID) => {
         LEFT JOIN [MasterUser] mul1_2 on lho.Lead1_2 = mul1_2.Username
         LEFT JOIN [MasterUser] mual1_2 on lho.ALead1_2 = mual1_2.Username
         WHERE ProdDate = '${ProdDate}' AND RecpNameID = ${RecpNameID}`
-    );
-    return logHopperOp.recordset;
-  };
+  );
+  return logHopperOp.recordset;
+};

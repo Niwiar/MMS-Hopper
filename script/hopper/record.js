@@ -408,7 +408,7 @@ function searchHopper() {
       id++;
     }
     $.ajax({
-      url: `/hopper/downtime?ProdDate=${fProdDate}`,
+      url: `/hopper/downtime?ProdDate=${fProdDate}&RecpNameID=${fRecpNameID}`,
       type: "PUT",
       contentType: "application/json",
       data: JSON.stringify({ Downtimes }),
